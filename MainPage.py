@@ -12,8 +12,20 @@ def start():
     a = OptionMenu(main,variable,*returnUsersNames(userlist))
     a.grid(row=0,column=0)
 
+    
+ 
 
-    b = Button(main,text="Add",command= lambda: [add(),quit(main)])
+    logIn = Button(master, text="Log In", command= logIn )
+    logIn.place(x = 20, y = 30 )
+
+    addUser = Button(master, text="Add User", command= addUser )
+    addUser.place(x = 80, y = 30)
+
+
+
+
+    
+    b = Button(main,text="Select",command= lambda: [add(),quit(main)])
     b.grid(row=1,column=0)
 
     mainloop()
