@@ -15,18 +15,24 @@ def start():
     
  
 
-    logIn = Button(master, text="Log In", command= logIn )
-    logIn.place(x = 20, y = 30 )
+    logIn = Button(main, text="Log In", command=login )
+    # logIn.place(x = 20, y = 30 )
+    logIn.grid(row=1,column=0)
 
-    addUser = Button(master, text="Add User", command= addUser )
-    addUser.place(x = 80, y = 30)
+    addUser = Button(main, text="Add User", command= add )
+    # addUser.place(x = 80, y = 30)
+    addUser.grid(row=2,column=0)
 
 
 
 
     
-    b = Button(main,text="Select",command= lambda: [add(),quit(main)])
-    b.grid(row=1,column=0)
+    b = Button(main,text="Select",command= lambda: [viewUserProfile(getPersonByUsername(variable.get())),quit(main)])
+    b.grid(row=3,column=0)
+
+    # profileButton = Button(main,text="View Profile",command= lambda: [viewUserProfile(getPersonByUsername(variable.get())),quit(main)])
+    # profileButton.grid(row=4,column=0)
+
 
     mainloop()
 
@@ -49,6 +55,9 @@ def add():
     e = Button(adding,text="Add",command= lambda: [addtoList(d.get()),quit(adding),start()])
     e.grid(row=1,column=0)
 
+def login():
+    pass
+
 def quit(m):
     m.destroy()
 
@@ -57,6 +66,20 @@ def addtoList(name):
     userlist.append(newUser)
     print(userlist)
 
+def getPersonByUsername(username):
+
+    for individual in userlist:
+        if username == individual.getUsername():
+            return individual
+
+    return None
+
+def viewUserProfile(somePerson):
+
+    profile = Tk()
+    profile.geometry("200x200")
+
+    print(somePerson.getUsername())
 
 def main():
     start()
