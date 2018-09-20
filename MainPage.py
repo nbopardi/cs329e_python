@@ -22,14 +22,17 @@ def start():
 
     addUser = Button(main, text="Add User", command= add )
     # addUser.place(x = 80, y = 30)
-    addUser.grid(row=2,column=0)
+    addUser.grid(row=0,column=1)
 
 
 
 
     
     b = Button(main,text="Select",command= lambda: [viewUserProfile(getPersonByUsername(variable.get())),quit(main)])
-    b.grid(row=3,column=0)
+    b.grid(row=2,column=0)
+    
+    exitbutton = Button(main,text="Quit",command= lambda: [quit(main)])
+    exitbutton.grid(row = 2, column = 1)
 
     # profileButton = Button(main,text="View Profile",command= lambda: [viewUserProfile(getPersonByUsername(variable.get())),quit(main)])
     # profileButton.grid(row=4,column=0)
@@ -59,6 +62,8 @@ def add():
     f.grid(row=1,column = 0)
     g = Entry(adding)
     g.grid(row = 1, column = 1)
+    exitbutton = Button(adding,text="Quit",command= lambda: [quit(main)])
+    exitbutton.grid(row = 2, column = 1)
 
 def login():
     pass
