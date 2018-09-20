@@ -53,7 +53,11 @@ def add():
     d = Entry(adding)
     d.grid(row=0,column=1)
     e = Button(adding,text="Add",command= lambda: [addtoList(d.get()),quit(adding),start()])
-    e.grid(row=1,column=0)
+    e.grid(row=2,column=0)
+    f = Label(adding,text = "Description:")
+    f.grid(row=1,column = 0)
+    g = Entry(adding)
+    g.grid(row = 1, column = 1)
 
 def login():
     pass
