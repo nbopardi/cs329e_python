@@ -1,7 +1,8 @@
 from tkinter import *
 from Person import * 
+from PIL import Image, ImageTk
 
-userlist = [Person("Hamza"),Person("Austin")]
+userlist = [Person("Hamza", description='some desc'),Person("Austin")]
 
 def start():
     main = Tk()
@@ -78,12 +79,19 @@ def getPersonByUsername(username):
 
     return None
 
-def viewUserProfile(somePerson):
+def viewUserProfile(user):
 
-    profile = Tk()
-    profile.geometry("200x200")
+    viewing = Tk()
+    viewing.geometry("200x200")
 
-    print(somePerson.getUsername())
+    NameLabel = Label(viewing,text=user.getUsername())
+    NameLabel.grid(row=0,column=0)
+
+    DescriptionLabel = Label(viewing,text=user.getDescription())
+    DescriptionLabel.grid(row=1,column=0)
+
+    back = Button(viewing,text="Back",command= lambda: [quit(viewing),start()])
+    back.grid(row=2,column=0)
 
 def main():
     start()
