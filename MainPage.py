@@ -5,9 +5,14 @@ import os
 
 userlist = [Person("Hamza", description='some desc'),Person("Austin")]
 
+logflag = False
+
+currentuser = None
+
 def start():
     main = Tk()
     main.geometry("200x200")
+    main.title(maintitle())
 
     variable = StringVar(main)
     variable.set("(select person)")
@@ -17,7 +22,7 @@ def start():
     
  
 
-    logIn = Button(main, text="Log In", command=login )
+    logIn = Button(main, text=logbuttontext(), command= lambda: [quit(main), logbuttoncommand()])
     # logIn.place(x = 20, y = 30 )
     logIn.grid(row=1,column=0)
 
@@ -63,8 +68,76 @@ def add():
     g = Entry(adding)
     g.grid(row = 1, column = 1)
 
-def login():
-    pass
+def maintitle():
+    global currentuser
+    if (currentuser == None):
+        return "Guest"
+    else:
+        return currentuser.getUsername()
+
+def swaplogflag():
+    global logflag
+    if (logflag == False):
+        logflag = True
+    else:
+        logflag = False
+
+def logbuttontext():
+    global logflag
+    if (logflag == True):
+        return "Log Out"
+    else:
+        return "Log In"
+
+def logbuttoncommand():
+    global logflag
+    if (logflag == False):
+        login("Log In")
+    else:
+        logflag = False
+        logout()
+
+def errorcheck(username, page):
+    quit(page)
+    global currentuser
+    for i in userlist:
+        current = i.getUsername()
+        if (current == username):
+            currentuser = i
+            swaplogflag()
+            start()
+
+    login("Error")
+
+def checkname(name):
+    check = Tk()
+    check.title(name)
+
+def logout():
+    global logflag
+    global currentuser
+    logflag = False
+    currentuser = None
+    start()
+
+def login(title):
+    logPage = Tk()
+    logPage.title(title)
+    logPage.geometry("225x100")
+
+    caption = Label(logPage, text = "Username")
+    caption.grid(row=1, column=0)
+
+    back = Button(logPage, text = "Back", command=lambda:[logPage.destroy(), start()])
+    back.grid(row=0, column=2)
+    
+    userLogIn = Entry(logPage)
+    userLogIn.grid(row=1, column=1)
+
+    logUser = Button(logPage, text = "Log In", command= lambda: [errorcheck(userLogIn.get(), logPage)])
+    logUser.grid(row=2, column=1)
+
+    logPage.mainloop()
 
 def quit(m):
     m.destroy()
