@@ -15,28 +15,52 @@ currentuser = None
 
 def start():
     main = Tk()
-    main.geometry("200x200")
+    w = 350
+    h = 150
+    # get screen width and height
+
+    w2 = main.winfo_screenwidth() # width of the screen
+    h2 = main.winfo_screenheight() # height of the screen
+
+    # calculate x and y coordinates for the Tk root window
+    x = (w2/2) - (w/2)
+    y = (h2/2) - (h/2)
+
+    
+    main.geometry('%dx%d+%d+%d' % (w, h, x, y))
+    main.title(maintitle())
+
+    main.update()
+    main.minsize(main.winfo_width(), main.winfo_height())
+    main.resizable(width=False, height=False)
+
+
+    main.configure(background='DarkOrange2')
     main.title(maintitle())
 
     variable = StringVar(main)
     variable.set("(select person)")
     a = OptionMenu(main,variable,*returnUsersNames(userlist))
-    a.grid(row=0,column=0)
+    a.pack(anchor = CENTER)
+
+    b = Button(main,text="Select",command= lambda: [viewUserProfile(getPersonByUsername(variable.get()), main)])
+    # b = Button(main,text="Select",command= lambda: [topLevel])
+    b.pack(anchor = CENTER)
 
     
     if logflag == True:
 
         edit = Button(main, text = "Edit", command = lambda: [quit(main), edits()])
-        edit.grid(row =2, column =0)
+        edit.pack(anchor = CENTER, side = RIGHT, padx = 30)
     else:
 
         addUser = Button(main, text="Add User", command= lambda: [quit(main), add()])
         # addUser.place(x = 80, y = 30)
-        addUser.grid(row=2,column=0) 
+        addUser.pack(anchor = CENTER, side = RIGHT, padx = 30)
 
     logIn = Button(main, text=logbuttontext(), command= lambda: [quit(main), logbuttoncommand()])
     # logIn.place(x = 20, y = 30 )
-    logIn.grid(row=1,column=0)
+    logIn.pack(anchor = CENTER, side = LEFT, padx = 30)
 
 
 
@@ -44,10 +68,7 @@ def start():
 
 
     
-    b = Button(main,text="Select",command= lambda: [viewUserProfile(getPersonByUsername(variable.get()), main)])
-    # b = Button(main,text="Select",command= lambda: [topLevel])
 
-    b.grid(row=3,column=0)
 
     # profileButton = Button(main,text="View Profile",command= lambda: [viewUserProfile(getPersonByUsername(variable.get())),quit(main)])
     # profileButton.grid(row=4,column=0)
@@ -68,7 +89,26 @@ def returnUsersNames(objectList):
 def add():
 
     adding = Tk()
-    adding.geometry("200x200")
+    w = 350
+    h = 150
+    # get screen width and height
+
+    w2 = adding.winfo_screenwidth() # width of the screen
+    h2 = adding.winfo_screenheight() # height of the screen
+
+    # calculate x and y coordinates for the Tk root window
+    x = (w2/2) - (w/2)
+    y = (h2/2) - (h/2)
+
+    
+    adding.geometry('%dx%d+%d+%d' % (w, h, x, y))
+    adding.title(maintitle())
+
+    adding.update()
+    adding.minsize(adding.winfo_width(), adding.winfo_height())
+
+
+    adding.configure(background='DarkOrange2')
 
     c = Label(adding,text="Name:")
     c.grid(row=0,column=0)
@@ -92,16 +132,36 @@ def add():
 def edits():
 
     edit = Tk()
-    edit.geometry("400x200")
+    w = 500
+    h = 150
+    # get screen width and height
+
+    w2 = edit.winfo_screenwidth() # width of the screen
+    h2 = edit.winfo_screenheight() # height of the screen
+
+    # calculate x and y coordinates for the Tk root window
+    x = (w2/2) - (w/2)
+    y = (h2/2) - (h/2)
+
+    
+    edit.geometry('%dx%d+%d+%d' % (w, h, x, y))
+    edit.title(maintitle())
+
+    edit.update()
+    edit.minsize(edit.winfo_width(), edit.winfo_height())
+
+    edit.configure(background='DarkOrange2')
+
+
     img = ImageBrowser(edit)
     f = Label(edit,text = "New Description:")
-    f.grid(row=4,column = 0)
+    f.grid(row=0,column = 0)
     g = Entry(edit)
-    g.grid(row = 4, column = 1)
-    adimg = Button(edit, text = "confirm Adding Img", command = lambda: [editpic(img)])
-    adimg.grid( row = 2, column = 2)
-    addesc = Button(edit, text = "confirm Adding New Description", command = lambda: [ editdescript(g)])
-    addesc.grid( row = 2, column = 1)
+    g.grid(row = 0, column = 1)
+    adimg = Button(edit, text = "Confirm Image", command = lambda: [editpic(img)])
+    adimg.grid( row = 2, column = 1)
+    addesc = Button(edit, text = "Confirm Description", command = lambda: [ editdescript(g)])
+    addesc.grid( row = 0, column = 2)
     addboth = Button(edit, text = " Back", command = lambda: [ quit(edit), start()])
     addboth.grid( row = 3, column = 0)
     
@@ -186,13 +246,32 @@ def logout():
 def login(title):
     logPage = Tk()
     logPage.title(title)
-    logPage.geometry("225x100")
+    w = 350
+    h = 150
+    # get screen width and height
+
+    w2 = logPage.winfo_screenwidth() # width of the screen
+    h2 = logPage.winfo_screenheight() # height of the screen
+
+    # calculate x and y coordinates for the Tk root window
+    x = (w2/2) - (w/2)
+    y = (h2/2) - (h/2)
+
+    
+    logPage.geometry('%dx%d+%d+%d' % (w, h, x, y))
+    logPage.title(maintitle())
+
+    logPage.update()
+    logPage.minsize(logPage.winfo_width(), logPage.winfo_height())
+
+
+    logPage.configure(background='DarkOrange2')
 
     caption = Label(logPage, text = "Username")
     caption.grid(row=1, column=0)
 
     back = Button(logPage, text = "Back", command=lambda:[logPage.destroy(), start()])
-    back.grid(row=0, column=2)
+    back.grid(row=2, column=0)
     
     userLogIn = Entry(logPage)
     userLogIn.grid(row=1, column=1)
@@ -239,6 +318,25 @@ class Profile(Toplevel):
     def __init__(self, parent, user, title = None):
 
         self.profile = Toplevel() 
+
+        w = 400
+        h = 300
+        # get screen width and height
+
+        w2 = self.profile.winfo_screenwidth() # width of the screen
+        h2 = self.profile.winfo_screenheight() # height of the screen
+
+        # calculate x and y coordinates for the Tk root window
+        x = (w2/2) - (w/2)
+        y = (h2/2) - (h/2)
+
+        self.profile.geometry('%dx%d+%d+%d' % (w, h, x, y))
+        self.profile.title(maintitle())
+
+        self.profile.update()
+        self.profile.minsize(self.profile.winfo_width(), self.profile.winfo_height())
+
+        self.profile.configure(background='DarkOrange2')
 
         if title:
             self.profile.title(title)
