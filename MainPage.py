@@ -3,6 +3,7 @@ from Person import *
 from PIL import Image, ImageTk
 import os
 
+
 userlist = [Person("Hamza", description='some desc'),Person("Austin")]
 
 logflag = False
@@ -26,7 +27,7 @@ def start():
     # logIn.place(x = 20, y = 30 )
     logIn.grid(row=1,column=0)
 
-    addUser = Button(main, text="Add User", command= add )
+    addUser = Button(main, text="Add User", command= lambda: [quit(main), add()])
     # addUser.place(x = 80, y = 30)
     addUser.grid(row=2,column=0)
 
@@ -61,12 +62,32 @@ def add():
     c.grid(row=0,column=0)
     d = Entry(adding)
     d.grid(row=0,column=1)
-    e = Button(adding,text="Add",command= lambda: [addtoList(d.get()),quit(adding),start()])
-    e.grid(row=2,column=0)
+    
     f = Label(adding,text = "Description:")
     f.grid(row=1,column = 0)
     g = Entry(adding)
     g.grid(row = 1, column = 1)
+
+
+    imageBrowser = ImageBrowser(adding)
+
+    e = Button(adding,text="Add",command= lambda: [addtoList(name=d.get(), description=g.get(), photo=imageBrowser.getPhoto()),quit(adding),start()])
+    e.grid(row=3,column=0)
+
+# def browseImage(member):
+
+#     from tkinter import filedialog
+
+#     Tk().withdraw() 
+#     filename = filedialog.askopenfilename()
+#     print(filename)
+
+#     photo = ImageTk.PhotoImage(Image.open(filename))
+#     member.setImage(photo)
+
+#     print (member.getUsername())
+#     print (member.getDescription())
+#     print (member.getImage())
 
 def maintitle():
     global currentuser
@@ -142,8 +163,12 @@ def login(title):
 def quit(m):
     m.destroy()
 
-def addtoList(name):
-    newUser = Person(name)
+def addtoList(name, description, photo):
+    newUser = Person(username=name, description=description, image=photo)
+
+    print( newUser.getUsername())
+    print ( newUser.getDescription())
+    print (newUser.getImage())
     userlist.append(newUser)
     print(userlist)
 
@@ -200,7 +225,13 @@ class Profile(Toplevel):
         Label(master, text=username).grid(row=0)
         Label(master, text=description).grid(row=1)
 
-        photo = ImageTk.PhotoImage(Image.open("Beedle.png"))
+        # somephoto = ImageTk.PhotoImage(Image.open("Beedle.png"))
+
+        userPhotoLocation = user.getImage()
+        img = Image.open(userPhotoLocation)
+        img = img.resize((250,250), Image.ANTIALIAS)
+        photo = ImageTk.PhotoImage(img)
+
         # photo = user.getImage()
         imageLabel = Label(master, image=photo)
         imageLabel.grid(row=2, column=0)
@@ -228,6 +259,43 @@ class Profile(Toplevel):
         self.parent.focus_set()
 
         self.profile.destroy()
+
+from shutil import copy
+class ImageBrowser:
+
+    def __init__(self, master):
+
+        imageBrowser = Button(master, text="Browse Image", command=self.browseImage)
+        imageBrowser.grid(row=2, column=0)
+
+        self.photoLocation = None # will be path name of where photo is located
+
+    def browseImage(self):
+
+        from tkinter import filedialog
+
+        Tk().withdraw() 
+        filepath = filedialog.askopenfilename()
+        # print(filepath)
+
+        # self.assignImage(filename) 
+
+        imageDir = os.getcwd() + '/images/'
+
+        if not os.path.exists(imageDir):
+            os.makedirs(imageDir)
+
+        path, filename = os.path.split(filepath)
+        
+        endpath = copy(filepath, imageDir)
+
+        self.photo = endpath
+
+    def getPhoto(self):
+
+        return self.photo
+
+
 
 
 
