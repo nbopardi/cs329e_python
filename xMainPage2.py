@@ -2,9 +2,12 @@ from tkinter import *
 from Person import * 
 from PIL import Image, ImageTk
 import os
+import pickle
 
 
-userlist = [Person("Austin")]
+# userlist = [Person("Austin")]
+with open('userlist.pkl', 'rb') as f:
+    userlist = pickle.load(f)
 
 logflag = False
 
@@ -105,9 +108,11 @@ def edits():
     
 def editdescript(item):
     currentuser.setDescription(item.get())
+    saveUserList()
 
 def editpic(item):
     currentuser.setImage(item.getPhoto())
+    saveUserList()
     
     
 
@@ -164,8 +169,8 @@ def errorcheck(username, page):
             currentuser = i
             swaplogflag()
             start()
-
-    login("Error")
+    if (currentuser == None):
+        login("Error")
 
 def checkname(name):
     check = Tk()
@@ -203,11 +208,12 @@ def quit(m):
 def addtoList(name, description, photo):
     newUser = Person(username=name, description=description, image=photo)
 
-    print( newUser.getUsername())
-    print ( newUser.getDescription())
-    print (newUser.getImage())
+    # print( newUser.getUsername())
+    # print ( newUser.getDescription())
+    # print (newUser.getImage())
     userlist.append(newUser)
-    print(userlist)
+    # print(userlist)
+    saveUserList()
 
 def getPersonByUsername(username):
 
@@ -216,6 +222,11 @@ def getPersonByUsername(username):
             return individual
 
     return None
+
+def saveUserList():
+
+    with open('userlist.pkl', 'wb') as f:
+        pickle.dump(userlist, f)
 
 def viewUserProfile(user, master):
 
