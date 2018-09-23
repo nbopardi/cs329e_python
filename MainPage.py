@@ -1,6 +1,7 @@
 from tkinter import *
 from Person import * 
 from PIL import Image, ImageTk
+import os
 
 userlist = [Person("Hamza", description='some desc'),Person("Austin")]
 
@@ -22,17 +23,16 @@ def start():
 
     addUser = Button(main, text="Add User", command= add )
     # addUser.place(x = 80, y = 30)
-    addUser.grid(row=0,column=1)
+    addUser.grid(row=2,column=0)
 
 
 
 
     
-    b = Button(main,text="Select",command= lambda: [viewUserProfile(getPersonByUsername(variable.get())),quit(main)])
-    b.grid(row=2,column=0)
-    
-    exitbutton = Button(main,text="Quit",command= lambda: [quit(main)])
-    exitbutton.grid(row = 2, column = 1)
+    b = Button(main,text="Select",command= lambda: [viewUserProfile(getPersonByUsername(variable.get()), main)])
+    # b = Button(main,text="Select",command= lambda: [topLevel])
+
+    b.grid(row=3,column=0)
 
     # profileButton = Button(main,text="View Profile",command= lambda: [viewUserProfile(getPersonByUsername(variable.get())),quit(main)])
     # profileButton.grid(row=4,column=0)
@@ -62,8 +62,6 @@ def add():
     f.grid(row=1,column = 0)
     g = Entry(adding)
     g.grid(row = 1, column = 1)
-    exitbutton = Button(adding,text="Quit",command= lambda: [quit(main)])
-    exitbutton.grid(row = 2, column = 1)
 
 def login():
     pass
@@ -84,19 +82,82 @@ def getPersonByUsername(username):
 
     return None
 
-def viewUserProfile(user):
+def viewUserProfile(user, master):
 
-    viewing = Tk()
-    viewing.geometry("200x200")
+    profile = Profile(master, user, title="User Profile")
 
-    NameLabel = Label(viewing,text=user.getUsername())
-    NameLabel.grid(row=0,column=0)
+    
 
-    DescriptionLabel = Label(viewing,text=user.getDescription())
-    DescriptionLabel.grid(row=1,column=0)
+class Profile(Toplevel):
 
-    back = Button(viewing,text="Back",command= lambda: [quit(viewing),start()])
-    back.grid(row=2,column=0)
+    def __init__(self, parent, user, title = None):
+
+        self.profile = Toplevel() 
+
+        if title:
+            self.profile.title(title)
+
+        self.parent = parent
+
+        body = Frame(self.profile)
+        self.initial_focus = self.body(body, user)
+        body.pack(padx=5, pady=5)
+
+        self.buttonbox()
+
+        self.profile.grab_set() # makes sure that no mouse or keyboard events are sent to the wrong window
+
+        if not self.initial_focus:
+            self.initial_focus = self
+
+        self.profile.protocol("WM_DELETE_WINDOW", self.cancel)
+
+        self.initial_focus.focus_set() # need to explicitly move the keyboard focus to the dialog
+
+        self.profile.wait_window()
+
+    #
+    # construction hooks
+
+    def body(self, master, user):
+        # create dialog body.  return widget that should have
+        # initial focus. 
+        username = user.getUsername()
+        description = user.getDescription()
+        Label(master, text=username).grid(row=0)
+        Label(master, text=description).grid(row=1)
+
+        photo = ImageTk.PhotoImage(Image.open("Beedle.png"))
+        # photo = user.getImage()
+        imageLabel = Label(master, image=photo)
+        imageLabel.grid(row=2, column=0)
+        imageLabel.image = photo
+
+        return imageLabel # return the initial focus
+
+
+    def buttonbox(self):
+        # add standard button box
+
+        box = Frame(self.profile)
+
+        w = Button(box, text="Back", width=10, command=self.cancel, default=ACTIVE)
+        w.pack(side=LEFT, padx=5, pady=5)
+
+        self.profile.bind("<Escape>", self.cancel)
+
+        box.pack()
+
+
+    def cancel(self, event=None):
+
+        # put focus back to the parent window
+        self.parent.focus_set()
+
+        self.profile.destroy()
+
+
+
 
 def main():
     start()
