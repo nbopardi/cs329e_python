@@ -110,12 +110,12 @@ def add():
 
     adding.configure(background='DarkOrange2')
 
-    c = Label(adding,text="Name:")
+    c = Label(adding,text="Name:", bg = 'DarkOrange2')
     c.grid(row=0,column=0)
     d = Entry(adding)
     d.grid(row=0,column=1)
     
-    f = Label(adding,text = "Description:")
+    f = Label(adding,text = "Description:", bg = 'DarkOrange2')
     f.grid(row=1,column = 0)
     g = Entry(adding)
     g.grid(row = 1, column = 1)
@@ -126,7 +126,10 @@ def add():
     e = Button(adding,text="Add",command= lambda: [addtoList(name=d.get(), description=g.get(), photo=imageBrowser.getPhoto()),quit(adding),start()])
     e.grid(row=3,column=0)
     back = Button(adding, text = " Back", command = lambda: [ quit(adding), start()])
-    back.grid( row = 3, column = 1) 
+    back.grid( row = 3, column = 1)
+
+    label = Label(adding,text="JPEG or PNG required", bg = 'DarkOrange2')
+    label.grid(row = 2, column = 1)
 
 
 def edits():
@@ -154,7 +157,7 @@ def edits():
 
 
     img = ImageBrowser(edit)
-    f = Label(edit,text = "New Description:")
+    f = Label(edit,text = "New Description:", bg = 'DarkOrange2')
     f.grid(row=0,column = 0)
     g = Entry(edit)
     g.grid(row = 0, column = 1)
@@ -267,7 +270,7 @@ def login(title):
 
     logPage.configure(background='DarkOrange2')
 
-    caption = Label(logPage, text = "Username")
+    caption = Label(logPage, text = "Username", bg = 'DarkOrange2')
     caption.grid(row=1, column=0)
 
     back = Button(logPage, text = "Back", command=lambda:[logPage.destroy(), start()])
@@ -309,7 +312,11 @@ def saveUserList():
 
 def viewUserProfile(user, master):
 
-    profile = Profile(master, user, title="User Profile")
+    if (user == None):
+        quit(master)
+        start()
+    else:
+        profile = Profile(master, user, title="User Profile")
 
     
 
@@ -320,7 +327,7 @@ class Profile(Toplevel):
         self.profile = Toplevel() 
 
         w = 400
-        h = 300
+        h = 400
         # get screen width and height
 
         w2 = self.profile.winfo_screenwidth() # width of the screen
@@ -411,7 +418,7 @@ class ImageBrowser:
 
     def __init__(self, master):
 
-        imageBrowser = Button(master, text="Browse Image", command=self.browseImage)
+        imageBrowser = Button(master, text="Browse Image", command= lambda: [self.browseImage()])
         imageBrowser.grid(row=2, column=0)
 
         self.photoLocation = None # will be path name of where photo is located
@@ -436,6 +443,7 @@ class ImageBrowser:
         endpath = copy(filepath, imageDir)
 
         self.photo = filename
+        
 
     def getPhoto(self):
 
