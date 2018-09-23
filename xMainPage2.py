@@ -82,7 +82,7 @@ def add():
 
     e = Button(adding,text="Add",command= lambda: [addtoList(name=d.get(), description=g.get(), photo=imageBrowser.getPhoto()),quit(adding),start()])
     e.grid(row=3,column=0)
-    back = Button(adding, text = " Back", command = lambda: [ quit(edit), start()])
+    back = Button(adding, text = " Back", command = lambda: [ quit(adding), start()])
     back.grid( row = 3, column = 1) 
 
 
