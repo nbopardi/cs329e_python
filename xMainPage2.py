@@ -326,7 +326,7 @@ class Profile(Toplevel):
 
         self.profile = Toplevel() 
 
-        w = 400
+        w = 450
         h = 400
         # get screen width and height
 
