@@ -1,14 +1,15 @@
 # Person.py
 # Defines the class for a generic Person in Project 0
+import os
 class Person():
 
 	# Requires a username
 	# Profile image and user description are optional
 	def __init__(self, username, image=None, description=''):
 
-		self.username = username
-		self.profImage = image
-		self.description = description
+		self.setUsername(username)
+		self.setImage(image)
+		self.setDescription(description)
 
 	# Gets the username
 	def getUsername(self):
@@ -20,7 +21,7 @@ class Person():
 
 	# Gets the profile image
 	def getImage(self):
-		return self.profImage
+		return (os.getcwd() + '/images/' + self.profImage) # returns a path to the profile image
 
 	# Sets the profile image
 	def setImage(self, newImage):

@@ -326,7 +326,7 @@ class ImageBrowser:
         
         endpath = copy(filepath, imageDir)
 
-        self.photo = endpath
+        self.photo = filename
 
     def getPhoto(self):
 
