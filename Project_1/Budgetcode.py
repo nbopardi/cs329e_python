@@ -1,8 +1,9 @@
 import pandas as pd
+import unittest
 
 df = pd.read_csv('budget.csv')
 
-#print(df)
+print(df)
 
 x = df.describe()
 
@@ -14,18 +15,28 @@ y = df["Date"]
 
 z = df["Ammount"]
 
-total = 0.0
+class sumunittest(unittest.TestCase):
 
+    def test_summing(self):
+        self.assertEqual(sumitems(),805.5)
 
-for items in z:
-    length = len(items)
-    sObject = slice(1,length)
-    numerical = items[sObject]
-    total += float(numerical)
+def sumitems():
+    total = 0.0 
+    for items in z:
+        length = len(items)
+        sObject = slice(1,length)
+        numerical = items[sObject]
+        total += float(numerical)
     
-print(total)
-end = df.tail()
+    return(total)
 
-print(end)
 
-#print(z)
+
+def main():
+
+    x = sumitems()
+    print(x)
+    
+main()
+
+unittest.main()
