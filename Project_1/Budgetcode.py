@@ -1,5 +1,6 @@
 import pandas as pd
 import unittest
+import numpy
 
 df = pd.read_csv('budget.csv')
 
@@ -13,14 +14,34 @@ y = df["Date"]
 
 #print(y)
 
-z = df["Ammount"]
+
+
+def newexpense(df):
+    price = input("Enter Price")
+    category = input("Enter Type of Expense")
+
+    date = input("Enter Date")
+    f = open("budget.csv", "a")
+    f.write('\n')
+    
+
+    df2 = pd.DataFrame(columns=['Date', 'type', 'Ammount'])
+    df2.loc[0] = [date, category, price]
+
+    df2.to_csv(f, index=False, header=False)
+
+    f.close
+    df3 = pd.read_csv('budget.csv')
+    return df3
+    
 
 class sumunittest(unittest.TestCase):
 
     def test_summing(self):
         self.assertEqual(sumitems(),805.5)
 
-def sumitems():
+def sumitems(df):
+    z = df["Ammount"]
     total = 0.0 
     for items in z:
         length = len(items)
@@ -33,9 +54,14 @@ def sumitems():
 
 
 def main():
+    
+    
+    y = newexpense(df)
+    x = sumitems(y)
+    print("Sum:", x)
+    
+    
 
-    x = sumitems()
-    print(x)
     
 main()
 
