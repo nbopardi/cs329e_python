@@ -16,3 +16,11 @@ class sumunittest(unittest.TestCase):
         self.assertIn(category, str(df["type"]))
         self.assertIn(price, str(df["Ammount"]))
         self.assertIn(date, str(df["Date"]))
+        
+    def test_graph(self):
+        cumsum = timeseries()
+        temp = cumsum[0]
+
+        for x in range(1,len(cumsum)):
+            self.assertTrue(cumsum[x-1]>temp)
+            temp = cumsum[x]
