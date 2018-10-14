@@ -40,14 +40,14 @@ def newexpense():
     return df3
 
 
-def convertprice(price):
+def convertprice(price):  # removes dollar sign
     length = len(price)
     sObject = slice(1, length)
     numerical = float(price[sObject])
     return numerical
 
 
-def sumitems(df):
+def sumitems(df):  # sums the items
     z = df["Ammount"]
     total = 0.0 
     for items in z:
@@ -59,15 +59,19 @@ def sumitems(df):
     return total
 
 
-def timeseries():
+def timeseries():  # time series chart
 
-    sums1 = datesums(combiningdates())
-    unique_date_list = date_dict.keys()
-    plt.plot(unique_date_list, np.cumsum(sums1))
+    sums1 = sumkeys(makedict())
+    unique_date_list = list(date_dict.keys())
+    ttsum = np.cumsum(sums1)
+    plt.scatter(unique_date_list, ttsum, color = "red")
+    numx = np.arange(0,len(unique_date_list))
+    plt.plot(np.unique(numx), np.poly1d(np.polyfit(numx, ttsum, 1))(np.unique(numx)))
     plt.ylabel('Total $ Spent')
+    return ttsum
 
 
-def combiningdates():
+def makedict():  # making the dictionary
 
     for index in range(len(list_of_dates)):
         if list_of_dates[index] in date_dict:
@@ -77,7 +81,7 @@ def combiningdates():
     return date_dict
 
 
-def datesums(dick):
+def sumkeys(dick):  # summing the values in each key
     list_of_date_sums = []
     for items in dick:
         x = sum(dick[items])
