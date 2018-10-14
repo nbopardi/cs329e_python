@@ -4,8 +4,6 @@ import numpy as np
 
 df = pd.read_csv('budget.csv')
 
-print(df)
-
 x = df.describe()
 y = df["Date"]
 
@@ -18,14 +16,63 @@ list_of_dates = df["Date"].tolist()
 list_of_prices = df["Ammount"].tolist()
 
 
-def newexpense():
-    global price
-    global category
-    global date
+# Lets the user modify the date, category, or amount given a row in a dataframe
+def modifyEntry(df, row, date=None, category=None, amount=None):
+
+
+    # Verify if date was provided
+    if date != None:
+        try:
+            df.at[row, "Date"] = pd.to_datetime(date, errors='raise').date()  # The format is normalized to M/D/Y
+        except:
+            print("Please enter date in M/D/Y ex. 10/2/2018")
+            raise ValueError
+
+    # Verify if category was provided
+    if category != None:
+        try:
+            category = str(category)
+            if not category.isalpha():  # Check to make sure string contains only letters
+                raise TypeError
+            df.at[row, "type"] = category
+        except TypeError:
+            print('Please enter a string for the type')
+            raise TypeError
+
+    # Verify if amount was provided
+    if amount != None:
+        amount = str(amount)
+
+        try:
+            amount = format(float(amount), '.2f')  # Format the string to have 2 decimal points
+
+            if float(amount) >= 0:  # Make sure not negative number
+                dollarAmount = '$' + amount  # Add dollar sign to the string
+                df.at[row, "Ammount"] = dollarAmount
+            else:
+                raise ValueError
+        except ValueError:
+            print('Please enter a float for the amount')
+            raise ValueError
+
+    f = open("budget.csv", "w")
+    df.to_csv(f, index=False, header=True)
+
+# Deletes an entire row in a dataframe and reindexes the dataframe
+def deleteRowEntry(df, row):
+    df = df.drop([row]).reset_index(drop=True)
+    return df
+
+
+def newexpense(price = None, category = None,date = None):
+
     global df
-    price = input("Enter Price")
-    category = input("Enter Type of Expense")
-    date = input("Enter Date")
+
+    if not price and category and date:
+        price = input("Enter Price")
+        category = input("Enter Category")
+        date = input("Enter Date")
+        return [date]
 
     f = open("budget.csv", "a")
     f.write('\n')
@@ -68,6 +115,8 @@ def timeseries():  # time series chart
     numx = np.arange(0,len(unique_date_list))
     plt.plot(np.unique(numx), np.poly1d(np.polyfit(numx, ttsum, 1))(np.unique(numx)))
     plt.ylabel('Total $ Spent')
+    plt.xlabel('Date')
+    plt.show()
     return ttsum
 
 
@@ -93,13 +142,17 @@ def sumkeys(dick):  # summing the values in each key
 
 def main():
     global df
+
+    modifyEntry(df, row = 0, amount = 10000)
     timeseries()
+    print(df)
+
 
     # y = newexpense()
     # x = sumitems(y)
     # print("Sum:", x)
 
-    plt.show()
+
 
 
 main()
