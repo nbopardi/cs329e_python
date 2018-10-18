@@ -55,36 +55,29 @@ def modifyEntry(df, row, date=None, category=None, amount=None):
             print('Please enter a float for the amount')
             raise ValueError
 
-    f = open("budget.csv", "w")
-    df.to_csv(f, index=False, header=True)
+    return df
+    # f = open("budget.csv", "w")
+    # df.to_csv(f, index=False, header=True)
 
 # Deletes an entire row in a dataframe and reindexes the dataframe
 def deleteRowEntry(df, row):
     df = df.drop([row]).reset_index(drop=True)
     return df
 
+# Amount, Category, and Date are optional params for debugging
+# Typically these would be entered by the user via the keyboard
+def newExpense(df, amount=None, category=None, date=None):
 
-def newexpense(price = None, category = None,date = None):
-
-    global df
-
-    if not price and category and date:
-        price = input("Enter Price")
+    # If all optional params are None, then read input
+    if not amount and not category and not date:
+        amount = input("Enter Amount")
         category = input("Enter Category")
         date = input("Enter Date")
-        return [date]
 
-    f = open("budget.csv", "a")
-    f.write('\n')
-
-    df2 = pd.DataFrame(columns=['Date', 'type', 'Ammount'])
-    df2.loc[0] = [date, category, price]
-    df2.to_csv(f, index=False, header=False)
-
-    f.close
-    df3 = pd.read_csv('budget.csv')
-
-    return df3
+    rowIndex = df.shape[0] # get the row index to add to
+    df = modifyEntry(df, rowIndex, date=date, category=category, amount=amount)
+    
+    return df
 
 
 def convertprice(price):  # removes dollar sign
@@ -144,6 +137,9 @@ def main():
     global df
 
     modifyEntry(df, row = 0, amount = 10000)
+
+    newExpense(df)
+
     timeseries()
     print(df)
 
