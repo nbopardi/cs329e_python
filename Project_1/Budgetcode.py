@@ -4,16 +4,16 @@ import numpy as np
 
 df = pd.read_csv('budget.csv')
 
-x = df.describe()
-y = df["Date"]
-
 price = None
 category = None
 date = None
 
 date_dict = {}
+category_dict = {}
+
 list_of_dates = df["Date"].tolist()
 list_of_prices = df["Ammount"].tolist()
+list_of_categories = df["type"].tolist()
 
 
 # Lets the user modify the date, category, or amount given a row in a dataframe
@@ -55,28 +55,31 @@ def modifyEntry(df, row, date=None, category=None, amount=None):
             print('Please enter a float for the amount')
             raise ValueError
 
+    #f = open("budget.csv", "w")
+   # df.to_csv(f, index=False, header=True)
+    date_dict.clear()
+    category_dict.clear()
     return df
-    # f = open("budget.csv", "w")
-    # df.to_csv(f, index=False, header=True)
 
 # Deletes an entire row in a dataframe and reindexes the dataframe
 def deleteRowEntry(df, row):
     df = df.drop([row]).reset_index(drop=True)
+    date_dict.clear()
+    category_dict.clear()
     return df
 
-# Amount, Category, and Date are optional params for debugging
-# Typically these would be entered by the user via the keyboard
-def newExpense(df, amount=None, category=None, date=None):
 
+def newexpense(df, amount=None, category=None, date=None):
     # If all optional params are None, then read input
     if not amount and not category and not date:
         amount = input("Enter Amount")
         category = input("Enter Category")
         date = input("Enter Date")
 
-    rowIndex = df.shape[0] # get the row index to add to
+    rowIndex = df.shape[0]  # get the row index to add to
     df = modifyEntry(df, rowIndex, date=date, category=category, amount=amount)
-    
+    date_dict.clear()
+    category_dict.clear()
     return df
 
 
@@ -101,19 +104,36 @@ def sumitems(df):  # sums the items
 
 def timeseries():  # time series chart
 
-    sums1 = sumkeys(makedict())
+    sums = sumkeys(makedatedict())
     unique_date_list = list(date_dict.keys())
-    ttsum = np.cumsum(sums1)
+    ttsum = np.cumsum(sums)
     plt.scatter(unique_date_list, ttsum, color = "red")
-    numx = np.arange(0,len(unique_date_list))
+    numx = np.arange(0, len(unique_date_list))
     plt.plot(np.unique(numx), np.poly1d(np.polyfit(numx, ttsum, 1))(np.unique(numx)))
     plt.ylabel('Total $ Spent')
     plt.xlabel('Date')
     plt.show()
     return ttsum
 
+def pie():
 
-def makedict():  # making the dictionary
+    sums = sumkeys(makecategorydict())
+    sizes = []
+    unique_category_list = list(category_dict.keys())
+    total_values = sumitems(df)
+    for items in sums:
+        pp = items/total_values
+        sizes.append(pp)
+    fig1, ax1 = plt.subplots()
+    ax1.pie(sizes, labels=unique_category_list, autopct='%1.1f%%')
+    plt.show()
+
+
+
+def makedatedict():  # making the dictionary
+
+    list_of_prices = df["Ammount"].tolist()
+    list_of_dates = df["Date"].tolist()
 
     for index in range(len(list_of_dates)):
         if list_of_dates[index] in date_dict:
@@ -121,6 +141,21 @@ def makedict():  # making the dictionary
         else:
             date_dict[list_of_dates[index]] = [convertprice(list_of_prices[index])]
     return date_dict
+
+
+def makecategorydict():  # making the dictionary
+
+    list_of_prices = df["Ammount"].tolist()
+    list_of_categories = df["type"].tolist()
+
+    for index in range(len(list_of_categories)):
+        lowercaseItem = str(list_of_categories[index]).lower()
+        print(lowercaseItem)
+        if lowercaseItem in category_dict:
+            (category_dict[list_of_categories[index]]).append(convertprice(list_of_prices[index]))
+        else:
+            category_dict[list_of_categories[index]] = [convertprice(list_of_prices[index])]
+    return category_dict
 
 
 def sumkeys(dick):  # summing the values in each key
@@ -136,12 +171,38 @@ def sumkeys(dick):  # summing the values in each key
 def main():
     global df
 
-    modifyEntry(df, row = 0, amount = 10000)
+    # df = modifyEntry(df, row = 0, amount = 10000)
 
-    newExpense(df)
-
-    timeseries()
     print(df)
+    modifyEntry(df, 0, None, None, 10)
+    modifyEntry(df, 1, None, "school", None)
+    print("\n", df)
+    timeseries()
+    pie()
+    # method_to_execute = input("What method will you run: \n 0 - new expense \n 1 - modify entry\n 2 - delete row \n 3 - graph \n 4 - exit\n\t")
+
+    # while float(method_to_execute) != 3:
+    #     if float(method_to_execute) == 0:
+    #         entry_details = input("input Price, Category, Date (with spaces between):\t")
+    #         entry_details_list = entry_details.split()
+    #         newexpense(entry_details_list[0], entry_details_list[1], entry_details_list[2])
+    #
+    #     elif float(method_to_execute) == 1:
+    #         df_row_index = input("which row will be CHANGED:\t")
+    #         entry_details_date = input("input Date:\t")
+    #         entry_details_type = input("input Type:\t")
+    #         entry_details_cost = input("input Cost:\t")
+    #         modifyEntry(df, df_row_index, entry_details_date, entry_details_type, entry_details_cost)
+    #
+    #     elif float(method_to_execute) == 2:
+    #         df_row_index = input("which row will be DELETED:\t")
+    #         deleteRowEntry(df, df_row_index)
+    #
+    #     elif float(method_to_execute) == 3:
+    #         timeseries()
+    #
+    #     method_to_execute = input("What method will you run: \n 0 - new expense \n 1 - modify entry\n 3 - delete row \n 4 - exit")
+
 
 
     # y = newexpense()
