@@ -2,7 +2,18 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-df = pd.read_csv('budget.csv')
+def readInCSV(title):
+    df = pd.read_csv(title)
+    return convertToDateTime(df)
+
+def convertToDateTime(df):
+    rows = df.shape[0] # The number of rows in the dataframe
+    for i in range(0,rows): # Change all dates to pandas date time objects for sorting later on
+        df.at[i, "Date"] = pd.to_datetime(df.at[i,"Date"], errors='raise').date()
+
+    return df
+
+df = readInCSV('budget.csv')
 
 price = None
 category = None
@@ -14,6 +25,7 @@ category_dict = {}
 list_of_dates = df["Date"].tolist()
 list_of_prices = df["Ammount"].tolist()
 list_of_categories = df["type"].tolist()
+
 
 
 # Lets the user modify the date, category, or amount given a row in a dataframe
@@ -88,7 +100,6 @@ def convertprice(price):  # removes dollar sign
     sObject = slice(1, length)
     numerical = float(price[sObject])
     return numerical
-
 
 def sumitems(df):  # sums the items
     z = df["Ammount"]
@@ -212,4 +223,4 @@ def main():
 
 
 
-main()
+# main()
