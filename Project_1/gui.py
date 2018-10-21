@@ -42,8 +42,13 @@ class Application(tk.Frame):
 
         self.graphButton = tk.Button(self)
         self.graphButton["text"] = "Scatter Plot Graph"
-        self.graphButton["command"] = self.say_hi
+        self.graphButton["command"] = timeseries
         self.graphButton.pack(side="top")
+
+        self.graphButton = tk.Button(self)
+        self.graphButton["text"] = "Pie Graph"
+        self.graphButton["command"] = pie
+        self.graphButton.pack(side="top")  
 
         self.quit = tk.Button(self, text="QUIT", fg="red",
                               command=root.destroy)
