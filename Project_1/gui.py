@@ -37,7 +37,7 @@ class Application(tk.Frame):
 
         self.deleteButton = tk.Button(self)
         self.deleteButton["text"] = "Delete Expense"
-        self.deleteButton["command"] = self.say_hi
+        self.deleteButton["command"] = self.delete
         self.deleteButton.pack(side="top")
 
         self.graphButton = tk.Button(self)
@@ -146,6 +146,33 @@ class Application(tk.Frame):
         self.df = modifyEntry(df=self.df, row=row, date=date, category=category, amount=amount)
         self.table.redraw()
         self.table.sortTable(0) # Sort by column index 0, which is date
+
+    def delete(self):    
+        d = tk.Toplevel()
+
+        l = tk.Label(d, text = "Row: ")
+        l.pack()
+        
+        row = tk.Entry(d)
+        row.pack()
+
+        dButton = tk.Button(d, text = "Delete", command = lambda: [self.deleteRow(row.get()), d.destroy()])
+        dButton.pack()
+
+
+    def deleteRow(self, row):
+        try:
+            x = int(row) - 1
+            if x < self.df.shape[0] and x >= 0:
+                self.df = deleteRowEntry(df=self.df, row=x)
+                self.table.model.df = self.df
+                self.table.redraw()
+                self.table.sortTable(0)
+            else:
+                print("Please enter a valid row number")
+                return
+        except ValueError:
+            print("Please enter a number")
 
 
 root = tk.Tk()
