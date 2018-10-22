@@ -2,9 +2,11 @@ import tkinter as tk
 import pandas as pd
 from pandastable import Table, TableModel
 from Budgetcode import *
- 
+
+
 
 class Application(tk.Frame):
+    
     def __init__(self, master=None):
         super().__init__(master)
 
@@ -24,7 +26,13 @@ class Application(tk.Frame):
         self.pack()
         self.createWidgets()
 
-    def createWidgets(self):
+    def ts(self):
+        timeseries(self.df)
+
+    def pies(self):
+        pie(self.df)
+
+    def createWidgets(self): # creates buttons for each function
         self.modifyButton = tk.Button(self)
         self.modifyButton["text"] = "Modify Entry"
         self.modifyButton["command"] = self.modifyRowEntry
@@ -42,21 +50,27 @@ class Application(tk.Frame):
 
         self.graphButton = tk.Button(self)
         self.graphButton["text"] = "Scatter Plot Graph"
-        self.graphButton["command"] = timeseries
+        self.graphButton["command"] = self.ts
         self.graphButton.pack(side="top")
 
         self.graphButton = tk.Button(self)
         self.graphButton["text"] = "Pie Graph"
-        self.graphButton["command"] = pie
+        self.graphButton["command"] = self.pies
         self.graphButton.pack(side="top")  
 
-        self.quit = tk.Button(self, text="QUIT", fg="red",
-                              command=root.destroy)
+        self.quit = tk.Button(self, text="QUIT", fg="red", # calls savefile before ending program 
+                              command= lambda:[self.savefile(),root.destroy()])
         self.quit.pack(side="bottom")
 
-    def say_hi(self):
-        pass
+ 
 
+    def savefile(self): # rewrites CSV file with updated data
+        f = open("budget.csv","w")
+        self.df.to_csv(f, index = False, header = True)
+        print("oo")
+        f.close
+
+    # Adds a new expense to the dataframe
     def addNewExpense(self):
 
         top = tk.Toplevel()
@@ -85,12 +99,13 @@ class Application(tk.Frame):
                                     top.destroy()])
 
         addButton.grid(row=3,column=0)
-
+    # Helper method to add expense to dataframe
     def addExpenseToDf(self, date, category, amount):
         self.df = newexpense(df=self.df, amount=amount, category=category, date=date)
         self.table.redraw()
         self.table.sortTable(0) # Sort by column index 0, which is date
 
+    # Modify a row entry 
     def modifyRowEntry(self):
 
         top = tk.Toplevel()
@@ -125,6 +140,7 @@ class Application(tk.Frame):
 
         addButton.grid(row=4,column=0)
 
+    # Helper method to modify row entry
     def modifyExpenseToDf(self, row, date, category, amount):
         try:
             row = int(row)
@@ -147,6 +163,7 @@ class Application(tk.Frame):
         self.table.redraw()
         self.table.sortTable(0) # Sort by column index 0, which is date
 
+    # Delete row entry 
     def delete(self):    
         d = tk.Toplevel()
 
@@ -159,7 +176,7 @@ class Application(tk.Frame):
         dButton = tk.Button(d, text = "Delete", command = lambda: [self.deleteRow(row.get()), d.destroy()])
         dButton.pack()
 
-
+    # Helper method to delete a row in the dataframe
     def deleteRow(self, row):
         try:
             x = int(row) - 1
@@ -178,7 +195,7 @@ class Application(tk.Frame):
 root = tk.Tk()
 app = Application(master=root)
 
-# To get around random crash with scroll pad
+# To get around random crash with scroll pad (issue with pandastable)
 while True:
     try:
         app.update_idletasks()

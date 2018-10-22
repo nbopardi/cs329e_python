@@ -113,9 +113,9 @@ def sumitems(df):  # sums the items
     return total
 
 
-def timeseries():  # time series chart
+def timeseries(df):  # time series chart
 
-    sums = sumkeys(makedatedict())
+    sums = sumkeys(makedatedict(df))
     unique_date_list = list(date_dict.keys())
     ttsum = np.cumsum(sums)
     plt.scatter(unique_date_list, ttsum, color = "red")
@@ -126,9 +126,9 @@ def timeseries():  # time series chart
     
     plt.show()
 
-def pie():
+def pie(df): # pie chart 
 
-    sums = sumkeys(makecategorydict())
+    sums = sumkeys(makecategorydict(df))
     sizes = []
     unique_category_list = list(category_dict.keys())
     total_values = sumitems(df)
@@ -143,7 +143,7 @@ def pie():
 
 
 
-def makedatedict():  # making the dictionary
+def makedatedict(df):  # making the date dictionary
 
     list_of_prices = df["Ammount"].tolist()
     list_of_dates = df["Date"].tolist()
@@ -157,7 +157,7 @@ def makedatedict():  # making the dictionary
     return date_dict
 
 
-def makecategorydict():  # making the dictionary
+def makecategorydict(df):  # making the type dictionary
 
     list_of_prices = df["Ammount"].tolist()
     list_of_categories = df["type"].tolist()
