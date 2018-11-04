@@ -1,40 +1,49 @@
 import tkinter as tk
+import pandas as pd
+from QuizShow import *
+from Player import *
 
-# select number of players
-# cycle through players
-# vote on which answer choice is the best
-# select winner and award point value
-# give winner the chance to answer multiple choice question for bonus points
-# first to 10 points wins (2 for caption, 1 for mc)
+questionCounter = 0
 
-# Player class
+def readInCSV(title):
+	df = pd.read_csv(title)
+	return df
 
+def start(master):
 
-def start():
-    main = tk.Tk()
-    main.geometry("200x200")
-    user = Player("Joe")
+	user = Player("Joe")
 
+	gamestart = tk.Button(master,text="Press to Play", command= lambda: [game(user)])
+	gamestart.pack()
 
-
-
-    gamestart = tk.Button( main,text="Press to Play", command= lambda: [game(user)])
-    # addUser.place(x = 80, y = 30)
-    gamestart.grid(row=2,column=0)
-
+	master.mainloop()
 
 
 def game(user):
-    print("hi")
-    question()
-        
+	global questionCounter
+	print('QUESTION ', questionCounter)
+
+	df = readInCSV('meme.csv')
+
+	image = df.at[questionCounter, "Image Name"]
+	question = df.at[questionCounter, "Question"]
+	options = [df.at[questionCounter, "Answer 1"],df.at[questionCounter, "Answer 2"],df.at[questionCounter, "Answer 3"],df.at[questionCounter, "Answer 4"]]
+	answer = df.at[questionCounter, "Correct Answer"]
+
+	testQ = Question(image, question, options, answer)
+
+	questionWindow(testQ, user)
+
+	questionCounter = questionCounter + 1
+
+	if questionCounter >= 3: # debug: remove for final release
+		questionCounter = 0
 
 
-    
-    
-    
+
 def main():
-
-    start()
+	root = tk.Tk()
+	root.geometry("200x200")
+	start(root)
 
 main()

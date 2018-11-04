@@ -25,3 +25,6 @@ class Player():
 
 		return self.pointValue
 
+	def getName(self):
+		
+		return self.playerName

@@ -1,4 +1,4 @@
-from tkinter import *
+import tkinter as tk
 from PIL import Image, ImageTk
 
 class Question():
@@ -8,38 +8,49 @@ class Question():
         self.options = options
         self.answer = answer
 
-def questionWindow(question):
+def questionWindow(question, user):
 
-    questionWindow = Tk()
-    questionWindow.geometry("500x500")
+    questionWindow = tk.Toplevel()
+    questionWindow.geometry("1000x1000")
 
-    title_question = Label(questionWindow, text=question.question)
+    title_question = tk.Label(questionWindow, text=question.question)
     title_question.pack()
-
 
     image = Image.open(question.image)
     photo = ImageTk.PhotoImage(image)
-    title_image = Label(questionWindow, image = photo)
+    title_image = tk.Label(questionWindow, image = photo)
     title_image.pack()
+    title_image.image = photo
 
-    option1 = Button(questionWindow,text = question.options[0])
+    option1 = tk.Label(questionWindow,text = question.options[0])
     option1.pack()
-    option2 = Button(questionWindow,text = question.options[1])
+    option2 = tk.Label(questionWindow,text = question.options[1])
     option2.pack()
-    option3 = Button(questionWindow,text = question.options[2])
+    option3 = tk.Label(questionWindow,text = question.options[2])
     option3.pack()
-    option4 = Button(questionWindow,text = question.options[3])
+    option4 = tk.Label(questionWindow,text = question.options[3])
     option4.pack()
 
+    answer = tk.Entry(questionWindow)
+    answer.pack()
 
-    questionWindow.mainloop()
-
-
-def main():
-
-    pop = Question("Monkey.jpg","fuck",["go","fuck","yourself","bitch"],"fuck")
-    questionWindow(pop)
+    submitButton = tk.Button(questionWindow, text="Submit Answer", command = lambda:[verifyAnswer(answer.get(), question.answer, user), questionWindow.destroy()])
+    submitButton.pack()
 
 
-main()
 
+def verifyAnswer(enteredAnswer, correctAnswer, user):
+
+    if enteredAnswer == correctAnswer:
+        user.addPoints(1)
+        print ("You got the question correct!")
+        print ("Your score is now ", user.getPointValue())
+
+    else:
+        print ("You got the question wrong!")
+        print ("You entered choice ", enteredAnswer, " and the correct answer is ", correctAnswer)
+        print ("Your score is now ", user.getPointValue())
+ 
+    # Define win condition 
+    if user.getPointValue() >= 1:
+        print (user.getName(), ' wins!')
