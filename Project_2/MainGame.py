@@ -116,7 +116,6 @@ def verifyAnswer(option,answer,user):
 
         pointDisplay.mainloop()
 
-
 def main():
 
     opener = Tk()
@@ -125,7 +124,7 @@ def main():
     welcome = Label(opener, text= "Welcome to Meme Questionnaire!")
     welcome.pack()
 
-    welcome2 = Label(opener, text="Please Enter Your Name and Press Start!")
+    welcome2 = Label(opener, text="Press Start to Begin!")
     welcome2.pack()
 
     user = Player("Hamza")
