@@ -84,6 +84,9 @@ def engine(questionCounter, user):
         pointDisplay = Label(close, text="Congrats " + user.getName() + " you scored " + str(user.getPointValue()) + " points!")
         pointDisplay.pack()
 
+        quit = Button (close,text="Quit", command=lambda:[close.destroy()])
+        quit.pack()
+
         close.mainloop()
 
 def verifyAnswer(option,answer,user):
@@ -125,7 +128,6 @@ def main():
     welcome2 = Label(opener, text="Please Enter Your Name and Press Start!")
     welcome2.pack()
 
-    #can someone replace this with a text entry field rather than manual entry of the name
     user = Player("Hamza")
 
     start = Button(opener,text="Start",command= lambda: [opener.destroy(),engine(0,user)])
