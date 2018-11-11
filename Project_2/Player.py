@@ -26,12 +26,10 @@ class Player():
 
 	# Gets the player's point value
 	def getPointValue(self):
-
 		return self.pointValue
 
 	# Gets the player's name
 	def getName(self):
-		
 		return self.playerName
 
 	# Set if the player is the judge or not for the round (True or False)
@@ -41,3 +39,7 @@ class Player():
 	# Store the user's latest answer for the "Caption-this" mode
 	def storeAnswer(self, answer):
 		self.caption = answer
+
+	# Retreive the user's latest answer
+	def getAnswer(self, answer)
+		return self.caption
