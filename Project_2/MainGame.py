@@ -2,6 +2,7 @@ from tkinter import *
 import pandas as pd
 from PIL import Image, ImageTk
 
+playerList = []
 
 class Question():
     def __init__(self, image, question, options, answer):
@@ -116,6 +117,55 @@ def verifyAnswer(option,answer,user):
 
         pointDisplay.mainloop()
 
+def addPlayers():
+
+	add = Tk()
+	add.geometry("500x500")
+	a = Label(add,text="Player:")
+	a.pack()
+	p1 = Entry(add)
+	p1.pack()
+
+	e = Button(add, text = "Add Player", command = lambda: [createUser(p1.get()), add.destroy(), main()])
+	e.pack()
+
+
+def createUser(name):
+	newPlayer = Player(name)
+	print(newPlayer.getName())
+	playerList.append(newPlayer)
+	print(getPlayerNames(playerList))
+
+def getPlayerNames(playerList):
+	players = []
+	for i in playerList:
+		players.append(i.getName())
+	return(players)
+
+def deletePlayers():
+
+	delete = Tk()
+	delete.geometry("500x500")
+	l = Label(delete, text="Please delete a player from the player list:")
+	l.pack()
+	
+	b = Label(delete, text=getPlayerNames(playerList))
+	b.pack()
+
+	c = Entry(delete)
+	c.pack()
+
+	deleteButton = Button(delete, text = "Delete Player", command = lambda: [deleteUser(c.get()), delete.destroy(), main()])
+	deleteButton.pack()
+
+def deleteUser(name):
+	for i in playerList:
+		if i.getName() == name:
+			playerList.remove(i)
+	print(getPlayerNames(playerList))
+
+
+
 def main():
 
     opener = Tk()
@@ -131,6 +181,12 @@ def main():
 
     start = Button(opener,text="Start",command= lambda: [opener.destroy(),engine(0,user)])
     start.pack()
+
+    a = Button(opener, text="Add Player", command= lambda: [opener.destroy(), addPlayers()])
+    a.pack()
+
+    b = Button(opener, text="Delete Player", command= lambda: [opener.destroy(), deletePlayers()])
+    b.pack()
 
     opener.mainloop()
 
