@@ -1,6 +1,7 @@
 from tkinter import *
 import pandas as pd
 from PIL import Image, ImageTk
+from Player import *
 
 playerList = []
 
@@ -10,23 +11,6 @@ class Question():
         self.question = question
         self.options = options
         self.answer = answer
-
-class Player():
-
-    def __init__(self, name):
-        self.playerName = name
-        self.pointValue = 0
-
-    def addPoints(self, pointsEarned):
-        self.pointValue = self.pointValue + pointsEarned
-        if self.pointValue < 0:
-            self.pointValue = 0
-
-    def getPointValue(self):
-        return self.pointValue
-
-    def getName(self):
-        return self.playerName
 
 def questionWindow(question,questionCounter,user):
 
