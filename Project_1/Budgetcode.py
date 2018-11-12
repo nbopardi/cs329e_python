@@ -125,6 +125,7 @@ def timeseries(df):  # time series chart
     plt.xlabel('Date')
     
     plt.show()
+    return ttsum
 
 def pie(df): # pie chart 
 

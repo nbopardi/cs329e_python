@@ -1,4 +1,5 @@
 Date,type,Ammount
+2018-10-01,food,$6.50
 2018-10-01,rent,$500
 2018-10-01,school,$15.50
 2018-10-02,food,$12.00
@@ -13,9 +14,9 @@ Date,type,Ammount
 2018-10-07,food,$20.00
 2018-10-07,school,$2.00
 2018-10-07,school ,$22.00
-2018-10-08,school,$3.00
-2018-10-08,entertainment,$15.00
 2018-10-08,food,$8.00
+2018-10-08,entertainment,$15.00
+2018-10-08,school,$3.00
 2018-10-09,food,$4.00
 2018-10-10,healthcare,$25.00
 2018-10-10,car,$300.00
@@ -38,9 +39,9 @@ Date,type,Ammount
 2018-10-17,entertainment,$10.00
 2018-10-18,school,$4.00
 2018-10-18,food,$3.00
+2018-10-19,healthcare,$25.00
 2018-10-19,entertainment,$3.00
 2018-10-19,food,$8.00
-2018-10-19,healthcare,$25.00
 2018-10-20,food,$6.00
 2018-10-21,charity,$10.00
 2018-10-22,entertainment,$10.00
@@ -48,9 +49,9 @@ Date,type,Ammount
 2018-10-23,clothing,$20.00
 2018-10-23,food,$20.00
 2018-10-24,gas,$25.00
-2018-10-25,school,$4.00
 2018-10-25,food,$8.00
 2018-10-25,school,$3.00
+2018-10-25,school,$4.00
 2018-10-26,food,$10.00
 2018-10-26,healthcare,$25.00
 2018-10-27,food,$7.00
@@ -60,8 +61,8 @@ Date,type,Ammount
 2018-10-28,clothing,$20.00
 2018-10-28,school,$6.00
 2018-10-29,food,$8.00
-2018-10-30,entertainment,$2.00
 2018-10-30,school,$20.00
 2018-10-30,food,$5.00
 2018-10-30,utlities,$100.00
+2018-10-30,entertainment,$2.00
 2018-10-30,entertainment,$10.00

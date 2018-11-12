@@ -41,5 +41,5 @@ class Player():
 		self.caption = answer
 
 	# Retreive the user's latest answer
-	def getAnswer(self, answer)
+	def getAnswer(self):
 		return self.caption
