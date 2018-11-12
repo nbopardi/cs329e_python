@@ -5,6 +5,7 @@ from Player import *
 
 
 playerList = []
+questionCounter = 0
 
 class MCQuestion():
     def __init__(self, image, question, options, answer):
@@ -13,8 +14,8 @@ class MCQuestion():
         self.options = options
         self.answer = answer
 
-def questionWindow(question,user):
-
+def questionWindow(question,user,opener):
+    global questionCounter
     questionWindow = Toplevel()
     questionWindow.geometry("1000x1000")
 
@@ -27,13 +28,13 @@ def questionWindow(question,user):
     title_image.pack()
     title_image.image = photo
 
-    option1 = Button(questionWindow, text=question.options[0],command=lambda: [questionWindow.destroy(),verifyAnswer(question.options[0],question.answer,user),engine(questionCounter+1,user)])
+    option1 = Button(questionWindow, text=question.options[0],command=lambda: [questionWindow.destroy(),verifyAnswer(question.options[0],question.answer,user,opener),engine(questionCounter+1,user)])
     option1.pack()
-    option2 = Button(questionWindow, text=question.options[1],command=lambda: [questionWindow.destroy(),verifyAnswer(question.options[1],question.answer,user),engine(questionCounter+1,user)])
+    option2 = Button(questionWindow, text=question.options[1],command=lambda: [questionWindow.destroy(),verifyAnswer(question.options[1],question.answer,user,opener),engine(questionCounter+1,user)])
     option2.pack()
-    option3 = Button(questionWindow, text=question.options[2],command=lambda: [questionWindow.destroy(),verifyAnswer(question.options[2],question.answer,user),engine(questionCounter+1,user)])
+    option3 = Button(questionWindow, text=question.options[2],command=lambda: [questionWindow.destroy(),verifyAnswer(question.options[2],question.answer,user,opener),engine(questionCounter+1,user)])
     option3.pack()
-    option4 = Button(questionWindow, text=question.options[3],command=lambda: [questionWindow.destroy(),verifyAnswer(question.options[3],question.answer,user),engine(questionCounter+1,user)])
+    option4 = Button(questionWindow, text=question.options[3],command=lambda: [questionWindow.destroy(),verifyAnswer(question.options[3],question.answer,user,opener),engine(questionCounter+1,user)])
     option4.pack()
 
     questionWindow.mainloop()
@@ -70,86 +71,55 @@ def readInMainCSV(questionCounter):
     return image
     
 def engine(questionCounter, user,opener):
-    
-    #Who is inputting their answer
-    #Who is the judge (skip their answer)
-    #save each answer
-    #change to display answers for judge to choose
-    if len(playerList) < 3:
-        print("You need at least 3 Players to play!")
-        start()  
+
+    if user.getPointValue() >= 5:
+        print("win")
+    else:
+        user.setJudge(True)
+                    
+        MCq = readInCSV(questionCounter)
+        FQ = readInMainCSV(questionCounter)
+         
+        fibitchSubEngine(FQ,MCq,0,[],opener,user)
         
-    else:    
-        if (questionCounter<4):
-            question = readInMainCSV(questionCounter) 
-            question2 = readInCSV(questionCounter) 
-            counter = 0
-            judge = playerList[counter].setJudge(True)
-            
-    
-            fibitchSubEngine(question,question2,0,[],judge,opener)
-                
-
-            counter += 1
-            if counter >= len(playerList):
-                counter = 0
-
-            
-            #JudgesPage(question,question2,opener)
-
-            questionCounter += 1
-
-
-
-
-        else:
-            close = Tk()
-            close.geometry("1000x1000")
-
-            thanks = Label (close, text="Thanks for Playing")
-            thanks.pack()
-
-            pointDisplay = Label(close, text="Congrats " + user.getName() + " you scored " + str(user.getPointValue()) + " points!")
-            pointDisplay.pack()
-
-            quit = Button (close,text="Quit", command=lambda:[close.destroy()])
-            quit.pack()
-    
-            close.mainloop()
-
+        
+        
 
     
-def fibitchSubEngine(question,question2,usernum,answers,judge,opener):
+def fibitchSubEngine(question,question2,usernum,answers,opener,user):
     if usernum<len(playerList):
-        fibitch(question,question2,usernum,answers,judge,opener)
+        
+        fibitch(question,question2,usernum,answers,opener,user)
     else:
         print(answers)
         JudgesPage(question,question2,opener)
         return answers
 
 
-def fibitch(question,question2,usernum,answers,judge,opener):
-    if judge == True:
-        judge = False
+def fibitch(question,question2,usernum,answers,opener,user):
+
+    if playerList[usernum].isJudge == True:
+        user.setJudge(False)
+        fibitchSubEngine(question,question2,usernum+1,answers,opener,user)
     else:
-        open = Tk()
-        open.geometry("1000x1000")
+        ope = Toplevel()
+        ope.geometry("1000x1000")
 
         image = Image.open(question)
         photo = ImageTk.PhotoImage(image)
-        title_image = Label(open,image=photo)
+        title_image = Label(ope,image=photo)
         title_image.pack()
         title_image = photo
 
         default = StringVar()
-        answer = Entry(open,textvariable=default)
+        answer = Entry(ope,textvariable=default)
         answer.pack()
         default.set("")
 
-        select = Button(open,text="Enter",command = lambda:[playerList[usernum].storeAnswer(answer.get()),answers.append(answer.get()),open.destroy(),fibitchSubEngine(question,question2,usernum+1,answers,judge,opener)])
+        select = Button(ope,text="Enter",command = lambda:[playerList[usernum].storeAnswer(answer.get()),answers.append(answer.get()),ope.destroy(),fibitchSubEngine(question,question2,usernum+1,answers,opener,user)])
         select.pack()
 
-        open.mainloop()
+        ope.mainloop()
     
 def JudgesPage(question,question2,opener):
 
@@ -176,16 +146,16 @@ def JudgesPage(question,question2,opener):
     variable.set("(select caption)")
     a = OptionMenu(judgeWindow,variable,*returnCaptions(playerList))
     a.pack()
-    b = Button(judgeWindow,text="Select",command= lambda: [judgeWindow.destroy(),getpersonbycaption(question2,variable.get())])
+    b = Button(judgeWindow,text="Select",command= lambda: [judgeWindow.destroy(),getpersonbycaption(question2,variable.get(),opener)])
     b.pack()
     print("got past option menu")
 
     judgeWindow.mainloop()
-def getpersonbycaption(question,caption):
+def getpersonbycaption(question,caption,opener):
     for players in playerList:
         if players.caption == caption:
                players.addPoints(1)
-               questionWindow(question,players) 
+               questionWindow(question,players,opener) 
         
 def returnCaptions(objectList):
     captions =[]
@@ -193,29 +163,29 @@ def returnCaptions(objectList):
         captions.append(x.getAnswer())
     return captions
 
-def verifyAnswer(option,answer,user):
+def verifyAnswer(option,answer,user,opener):
     if (option == answer):
         user.addPoints(1)
 
-        pointDisplay = Tk()
+        pointDisplay = Toplevel()
         pointDisplay.geometry("1000x1000")
 
         finish = Label(pointDisplay, text= "Correct! You have " + str(user.getPointValue()) + " points!")
         finish.pack()
 
-        nextButton = Button(pointDisplay,text="Next", command=lambda: [pointDisplay.destroy()])
+        nextButton = Button(pointDisplay,text="Next", command=lambda: [pointDisplay.destroy(),engine(questionCounter,user,opener)])
         nextButton.pack()
 
         pointDisplay.mainloop()
 
     else:
-        pointDisplay = Tk()
+        pointDisplay = Toplevel()
         pointDisplay.geometry("1000x1000")
 
-        finish = Label(pointDisplay, text="Incorrect! You have" + str(user.getPointValue()) + " points!")
+        finish = Label(pointDisplay, text="Incorrect! You have " + str(user.getPointValue()) + " points!")
         finish.pack()
 
-        nextButton = Button(text="Next", command=lambda: [pointDisplay.destroy()])
+        nextButton = Button(pointDisplay, text="Next", command=lambda: [pointDisplay.destroy()])
         nextButton.pack()
 
         pointDisplay.mainloop()
@@ -284,7 +254,7 @@ def start():
     playerList.append(Player("Andy"))
     
 
-    start = Button(opener,text="Start",command= lambda: [opener.destroy(),engine(0,user,opener)])
+    start = Button(opener,text="Start",command= lambda: [opener.destroy(),engine(questionCounter,user,opener)])
     start.pack()
 
     
