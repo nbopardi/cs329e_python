@@ -5,7 +5,7 @@ from Player import *
 
 
 playerList = []
-questionCounter = 0
+questionCounter = -1
 
 class MCQuestion():
     def __init__(self, image, question, options, answer):
@@ -28,18 +28,19 @@ def questionWindow(question,user,opener):
     title_image.pack()
     title_image.image = photo
 
-    option1 = Button(questionWindow, text=question.options[0],command=lambda: [questionWindow.destroy(),verifyAnswer(question.options[0],question.answer,user,opener),engine(questionCounter+1,user)])
+    option1 = Button(questionWindow, text=question.options[0],command=lambda: [questionWindow.destroy(),verifyAnswer(question.options[0],question.answer,user,opener),engine(user,opener)])
     option1.pack()
-    option2 = Button(questionWindow, text=question.options[1],command=lambda: [questionWindow.destroy(),verifyAnswer(question.options[1],question.answer,user,opener),engine(questionCounter+1,user)])
+    option2 = Button(questionWindow, text=question.options[1],command=lambda: [questionWindow.destroy(),verifyAnswer(question.options[1],question.answer,user,opener),engine(user,opener)])
     option2.pack()
-    option3 = Button(questionWindow, text=question.options[2],command=lambda: [questionWindow.destroy(),verifyAnswer(question.options[2],question.answer,user,opener),engine(questionCounter+1,user)])
+    option3 = Button(questionWindow, text=question.options[2],command=lambda: [questionWindow.destroy(),verifyAnswer(question.options[2],question.answer,user,opener),engine(user,opener)])
     option3.pack()
-    option4 = Button(questionWindow, text=question.options[3],command=lambda: [questionWindow.destroy(),verifyAnswer(question.options[3],question.answer,user,opener),engine(questionCounter+1,user)])
+    option4 = Button(questionWindow, text=question.options[3],command=lambda: [questionWindow.destroy(),verifyAnswer(question.options[3],question.answer,user,opener),engine(user,opener)])
     option4.pack()
 
     questionWindow.mainloop()
 
-def readInCSV(questionCounter):
+def readInCSV():
+    global questionCounter
     #this part keeps track of the Question number
     print('QUESTION ', questionCounter)
 
@@ -56,9 +57,9 @@ def readInCSV(questionCounter):
     testQ = MCQuestion(image, question, options, answer)
     return testQ
 
-def readInMainCSV(questionCounter):
+def readInMainCSV():
 
-
+    global questionCounter
     #this part reads the CSV file
     df = pd.read_csv('meme.csv')
 
@@ -70,15 +71,16 @@ def readInMainCSV(questionCounter):
 
     return image
     
-def engine(questionCounter, user,opener):
-
+def engine( user,opener):
+    global questionCounter
+    questionCounter += 1
     if user.getPointValue() >= 5:
         print("win")
     else:
         user.setJudge(True)
                     
-        MCq = readInCSV(questionCounter)
-        FQ = readInMainCSV(questionCounter)
+        MCq = readInCSV()
+        FQ = readInMainCSV()
          
         fibitchSubEngine(FQ,MCq,0,[],opener,user)
         
@@ -100,6 +102,7 @@ def fibitch(question,question2,usernum,answers,opener,user):
 
     if playerList[usernum].isJudge == True:
         user.setJudge(False)
+        user.storeAnswer("")
         fibitchSubEngine(question,question2,usernum+1,answers,opener,user)
     else:
         ope = Toplevel()
@@ -161,6 +164,8 @@ def returnCaptions(objectList):
     captions =[]
     for x in objectList:
         captions.append(x.getAnswer())
+    if "" in captions:
+        captions.remove("")
     return captions
 
 def verifyAnswer(option,answer,user,opener):
@@ -173,7 +178,7 @@ def verifyAnswer(option,answer,user,opener):
         finish = Label(pointDisplay, text= "Correct! You have " + str(user.getPointValue()) + " points!")
         finish.pack()
 
-        nextButton = Button(pointDisplay,text="Next", command=lambda: [pointDisplay.destroy(),engine(questionCounter,user,opener)])
+        nextButton = Button(pointDisplay,text="Next", command=lambda: [pointDisplay.destroy(),engine(user,opener)])
         nextButton.pack()
 
         pointDisplay.mainloop()
@@ -185,7 +190,7 @@ def verifyAnswer(option,answer,user,opener):
         finish = Label(pointDisplay, text="Incorrect! You have " + str(user.getPointValue()) + " points!")
         finish.pack()
 
-        nextButton = Button(pointDisplay, text="Next", command=lambda: [pointDisplay.destroy()])
+        nextButton = Button(pointDisplay, text="Next", command=lambda: [pointDisplay.destroy(),engine(user,opener)])
         nextButton.pack()
 
         pointDisplay.mainloop()
@@ -254,7 +259,7 @@ def start():
     playerList.append(Player("Andy"))
     
 
-    start = Button(opener,text="Start",command= lambda: [opener.destroy(),engine(questionCounter,user,opener)])
+    start = Button(opener,text="Start",command= lambda: [opener.destroy(),engine(user,opener)])
     start.pack()
 
     
