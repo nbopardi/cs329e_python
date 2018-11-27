@@ -293,13 +293,13 @@ class Game():
     def __init__(self,players = [], deck = [],tables = []):
         self.players = getPlayers()
         self.deck = makeDeck()
-        #self.tables = [Card(4,'H'),Card(8,'H'),Card(5,'H'),Card(6,'H'),Card(14,'D')]
         self.tables = table(self.deck)
+        #self.tables = [Card(4,'H'),Card(8,'H'),Card(5,'H'),Card(6,'H'),Card(14,'D')]
 
         for x in self.players:
 
-            #x.cards = [Card(6,"D"),Card(14,"D")]
             x.cards = deal(self.deck)
+            #x.cards = [Card(6,"D"),Card(14,"D")]
             x.points = x.calcPoints() + x.calcPoints(self.tables)
 
             x.isOnePair(self.tables)
@@ -323,31 +323,33 @@ class Game():
         return output
 
     def play(self):
+
         """
-        for x in range(len(self.players)):
-            print("It Is " + self.players[x].name + "'s Turn")
+        for x in self.players:
+            print("It Is " + x.name + "'s Turn")
             input("Press Any Key To Continue")
             print("")
-            print("Here Are Your Cards:" + str(self.players[x].cards))
+            print("Here Are Your Cards:" + str(x.cards))
             print("Here Is The Table:" + str(self.tables[:3]))
             print("")
             ans = str(input("Would You Like To Stay? Press n To Leave"))
             print("")
             if (ans=='n'):
-                self.players.pop(x)
+                self.players.remove(x)
 
-        for x in range(len(self.players)):
-            print("It Is " + self.players[x].name + "'s Turn")
+        for x in self.players:
+            print("It Is " + x.name + "'s Turn")
             input("Press Any Key To Continue")
             print("")
-            print("Here Are Your Cards:" + str(self.players[x].cards))
+            print("Here Are Your Cards:" + str(x.cards))
             print("Here Is The Table:" + str(self.tables[:4]))
             print("")
             ans = str(input("Would You Like To Stay? Press n To Leave"))
             print("")
             if (ans=='n'):
-                self.players.pop(x)
+                self.players.remove(x)
         """
+
         print("Here is the table" + str(self.tables))
 
         highPush = 0
@@ -413,19 +415,19 @@ def cardSort(deck1 = [], deck2 = [],nest = False):
 
 def getPlayers():
 
-    try:
-        output = []
-        num = eval(input("Enter Number of Players "))
-        if (num>6):
-            raise ValueError
-        else:
-            for x in range(num):
-                name = str(input("Enter Name of Player " + str(x+1) +" "))
-                output.append(Player(name))
-            return output
-    except:
-        print("This input is not correct, please enter a number between 1-6")
-        getPlayers()
+    while True:
+        try:
+            output = []
+            num = eval(input("Enter Number of Players "))
+            if (num>6):
+                raise ValueError
+            else:
+                for x in range(num):
+                    name = str(input("Enter Name of Player " + str(x+1) +" "))
+                    output.append(Player(name))
+                return output
+        except:
+            print("This input is not correct, please enter a number between 1-6")
 
 def makeDeck():
 
@@ -448,6 +450,7 @@ def table(deck):
 
     output = []
     for x in range(5):
+        deck.pop()
         output.append(deck.pop())
     return output
 
