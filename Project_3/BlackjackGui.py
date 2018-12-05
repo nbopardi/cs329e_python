@@ -16,8 +16,8 @@ class Application(tk.Frame):
 		self.playBlackJack["command"] = self.createGame
 		self.playBlackJack.pack(side="top")
 
-		self.quit = tk.Button(self, text="QUIT", fg="red", command=root.destroy)
-		self.quit.pack(side="bottom")
+		#self.quit = tk.Button(self, text="QUIT", fg="red", command=root.destroy)
+		#self.quit.pack(side="bottom")
 
 
 	def createGame(self):
@@ -198,7 +198,8 @@ class Application(tk.Frame):
 			if p1.handTotal == p2.handTotal:
 				print ("It's a tie between ", p1.getName() + " and " + p2.getName())			
 
-
-root = tk.Tk()
-app = Application(master=root)
-app.mainloop()
+#def main():
+        #root = tk.Tk()
+        #app = Application(master=root)
+        #app.mainloop()
+#main()
