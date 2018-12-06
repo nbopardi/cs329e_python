@@ -1,6 +1,8 @@
 import tkinter as tk
 from Blackjack import *
+import settings
 from PIL import Image, ImageTk
+
 
 class Application(tk.Frame):
 	def __init__(self, master=None):
@@ -42,6 +44,11 @@ class Application(tk.Frame):
 		# Create the window for the game
 		top = tk.Toplevel()
 		top.geometry("1000x1000")
+
+		# Create text output for the game
+		settings.init(top)
+		settings.console.grid(row=35,columnspan=5)
+		settings.write("Welcome to Blackjack!")
 
 		# Contains all the cards for player 1
 		p1CardLabels = []
@@ -136,7 +143,9 @@ class Application(tk.Frame):
 
 			labels[i].configure(image=photo)
 			labels[i].image = photo
-			labels[i].grid(row=row,column=i)
+			# labels[i].grid(row=row,column=i)
+			labels[i].grid(row=row,columnspan=i+1)
+
 
 	# Function for dealer's inital hand to prevent the 'hold' card from being displayed
 	def updateImagesDealer(self, dealer, labels, row, column):
@@ -159,47 +168,50 @@ class Application(tk.Frame):
 
 		labels[1].configure(image=photo)
 		labels[1].image = photo
-		labels[1].grid(row=row,column=column+1)
+		labels[1].grid(row=row,columnspan=column+2)
 
 	# Considers the end game totals to determine who wins
 	def gameOver(self, dealer, p1, p2):
 
-		print ("Game over.")
-		print ("Final hands:")
-		print ("   Dealer:    " + str(dealer))
-		print ("   Player 1:  " + str(p1))
-		print ("   Player 2:  " + str(p2))
-
+		settings.write("\nGame over.")
+		settings.write("\nFinal hands:")
+		settings.write("\n   Dealer:    " + str(dealer))
+		settings.write("\n   Player 1:  " + str(p1))
+		settings.write("\n   Player 2:  " + str(p2))
+		settings.write("\n")
 		if dealer.handTotal == 21:
-			print ("Dealer wins!")
+			settings.write("Dealer wins!")
 
 		elif dealer.handTotal < 21:
 
 			if p1.handTotal > dealer.handTotal and p1.handTotal <= 21:
 				if (p2.handTotal < 21 and p1.handTotal > p2.handTotal) or p2.handTotal > 21: 
-					print (p1.getName() + " wins!")
+					settings.write(p1.getName() + " wins!")
 
 
 			if p2.handTotal > dealer.handTotal and p2.handTotal <= 21:
 				if (p1.handTotal < 21 and p2.handTotal > p1.handTotal) or p1.handTotal > 21:
-					print (p2.getName() + " wins!")
+					settings.write(p2.getName() + " wins!")
 
 			if p1.handTotal == p2.handTotal:
-				print ("It's a tie between ", p1.getName() + " and " + p2.getName())
+				if (p1.handTotal > 21 and p2.handTotal > 21):
+					settings.write("Dealer wins, players lose.")
+				else:
+					settings.write("It's a tie between ", p1.getName() + " and " + p2.getName() + ".")
 
 		else:
 
-			if p1.handTotal > p2.handTotal and p1.handTotal <= 21:
-				print (p1.getName() + " wins!")
+			if (p1.handTotal > p2.handTotal and p1.handTotal <= 21) or (p1.handTotal <= 21 and p2.handTotal > 21):
+				settings.write(p1.getName() + " wins!")
 
-			if p2.handTotal > p1.handTotal and p2.handTotal <= 21:
-				print (p2.getName() + " wins!")
+			if (p2.handTotal > p1.handTotal and p2.handTotal <= 21) or (p2.handTotal <= 21 and p1.handTotal > 21):
+				settings.write(p2.getName() + " wins!")
 
-			if p1.handTotal == p2.handTotal:
-				print ("It's a tie between ", p1.getName() + " and " + p2.getName())			
+			if p1.handTotal == p2.handTotal and p1.handTotal <= 21 and p2.handTotal <= 21:
+				settings.write("It's a tie between ", p1.getName() + " and " + p2.getName() + ".")			
 
-#def main():
-        #root = tk.Tk()
-        #app = Application(master=root)
-        #app.mainloop()
-#main()
+def main():
+        root = tk.Tk()
+        app = Application(master=root)
+        app.mainloop()
+main()

@@ -2,6 +2,9 @@
 #  Description: Plays a simplified game of Blackjack with multiple players and the computer as the dealer.
 
 import random
+from tkinter import Text
+
+import settings
 
 # The Card class, which creates a playing card with a rank, suit, and point value for Blackjack
 class Card:
@@ -138,11 +141,11 @@ class Player():
 # Parameter: dealer - the Player object that represents the dealer (the computer)
 def showHands(opponents, dealer):
 
-	print("\n")
-	print("Dealer shows " + str(dealer.hand[1]) + " face up.") 	# Dealer's second card is face up
+	settings.write("\n")
+	settings.write("Dealer shows " + str(dealer.hand[1]) + " face up.") 	# Dealer's second card is face up
 	
 	for opponent in opponents:
-		print(opponent.getName() + " shows " + str(opponent) + "face up.") 			# Player's cards are both faced up
+		settings.write(opponent.getName() + " shows " + str(opponent) + "face up.") 			# Player's cards are both faced up
 
 # Goes through the game sequence for the opponent
 # Parameter: cardDeck - the Deck of Cards that is used throughout the game
@@ -150,9 +153,7 @@ def showHands(opponents, dealer):
 # Parameter: choice - the decision the Player object made to hit (1) or stay (2)
 def opponentTurn(cardDeck, opponent, choice):
 
-	print("\n")
-	print(opponent.getName() + ", it's your turn.")
-	print("\n")
+	settings.write("\n" + opponent.getName() + ", it's your turn.\n")
 
 	# choice = 1
 
@@ -163,33 +164,47 @@ def opponentTurn(cardDeck, opponent, choice):
 		if opponent.hand[index].rank == "A":
 			
 			aceCount += 1
-			if aceCount == 1: 			# opponent dealt at least 1 ace initially
+			if aceCount == 1 and len(opponent.hand) == 2: 	# opponent dealt at least 1 ace initially
 				
 				opponent.hand[index].value = 11
-				print("Assuming 11 points for an ace you were dealt for now.")
+				settings.write("Assuming 11 points for an ace you were dealt for now.")
 
 	opponent.updateHandTotal()
 
 	if opponent.handTotal == 21: # if natural 21 / blackjack
 
-		print("Natural 21!")
+		settings.write("Natural 21!")
 		return
 	elif opponent.handTotal > 21: # if for some reason this function is run when the hand is already above 21, should return
 
-		print(opponent.getName() + " your hand is greater than 21, you already bust!")
-		return
+		# Convert all aces from 11 to 1 before bust
+		aceChange = False
+
+		for card in opponent.hand:
+			if card.rank == "A" and card.value == 11:
+
+				aceChange = True
+
+			if aceChange and card.rank == "A":
+
+				card.value = 1
+				settings.write("\nOver 21. Switching an ace from 11 points to 1.")
+
+		if opponent.handTotal > 21:
+			settings.write(opponent.getName() + " your hand is greater than 21, you already bust!")
+			return
 
 
 
 	if choice == 1: # continues the game sequence while opponent wants to hit and the opponent's hand is less than 22; return breaks out of the loop
 
-		print("You hold " + str(opponent) + "for a total of", opponent.handTotal)
+		settings.write("\nYou hold " + str(opponent) + "for a total of " +  str(opponent.handTotal))
 		# choice = int(input("1 (hit) or 2 (stay)? "))
 
 		cardDeck.dealOne(opponent)	# Deals the opponent the top Card from the Deck
 		newCard = opponent.hand[len(opponent.hand) - 1] 	# the Card just dealt to the opponent
-		print("\n")
-		print("Card dealt: " + str(newCard))
+		settings.write("\n")
+		settings.write("Card dealt: " + str(newCard))
 
 		if newCard.rank == "A": 				# checks to see if new card dealt was an ace, and adjusts the value if needed
 			
@@ -199,13 +214,13 @@ def opponentTurn(cardDeck, opponent, choice):
 				opponent.hand[len(opponent.hand) - 1].value = 11
 				opponent.updateHandTotal()
 				
-				if opponent.handTotal <= 21: 	# if don't bust from ace having a point value of 11, then make it an 11
-
-					print("Assuming 11 points for the ace you were dealt for now.")
-				else: 							# if would bust from making the ace have a point value of 11, then keep it as 1
-
+				if opponent.handTotal >= 21: 	# if would bust from making the ace have a point value of 11, then keep it as 1
+					 							
 					opponent.hand[len(opponent.hand) - 1].value = 1
 					opponent.updateHandTotal()
+					settings.write("Assuming 1 point for the ace you were dealt for now.")
+
+
 
 		aceChange = False
 
@@ -221,7 +236,7 @@ def opponentTurn(cardDeck, opponent, choice):
 
 			if aceCount > 0: 					
 
-				print("Over 21. Switching an ace from 11 points to 1.")
+				settings.write("\nOver 21. Switching an ace from 11 points to 1.")
 
 				for card in opponent.hand:
 
@@ -231,25 +246,25 @@ def opponentTurn(cardDeck, opponent, choice):
 
 				opponent.updateHandTotal()
 
-				print("New Total:", opponent.handTotal)
-				print("\n")
+				settings.write("\n New Total:" + str(opponent.handTotal))
+				settings.write("\n")
 
 
 		if opponent.handTotal > 21: 			# opponent busts even if all aces are changed to have a point value of 1
 
-			print("You have " + str(opponent.handTotal) + ". You bust! You lose.", sep = "")
-			print("\n")
+			settings.write("\nYou have " + str(opponent.handTotal) + ". You bust! You lose.")
+			settings.write("\n")
 			return
 
 		if opponent.handTotal == 21:			# opponent gets a 21 so the game sequence moves on to the next player
 
-			print("21! The next person should go now")
+			settings.write("\n21! The next person should go now")
 			return
 
 	elif choice == 2:		# check to see if opponent chooses to stay / stand
 
-		print("Staying with", opponent.handTotal)
-		print("\n")
+		settings.write("\nStaying with " + str(opponent.handTotal))
+		settings.write("\n")
 		return
 
 # Goes through the game sequence for the dealer
@@ -258,7 +273,7 @@ def opponentTurn(cardDeck, opponent, choice):
 # Parameter: opponents - the Player objects that represents the opponents (the users)
 def dealerTurn(cardDeck, dealer, opponents):
 
-	print("Dealer's turn")
+	settings.write("\nDealer's turn\n")
 
 	bustCounter = 0
 	for opponent in opponents:
@@ -267,11 +282,12 @@ def dealerTurn(cardDeck, dealer, opponents):
 			bustCounter += 1
 
 	if bustCounter == len(opponents): # if all opponents busted, no need for dealer to play, so the game is over
-		print("All opponents have busted! Dealer wins by default.")
+		settings.write("All opponents have busted! Dealer wins by default.\n")
 		return
 
 	for opponent in opponents:
-		print(opponent.getName() + "'s hand: " + str(opponent) + "for a total of", opponent.handTotal)
+
+		settings.write("\n" + opponent.getName() + "'s hand: " + str(opponent) + "for a " +  str(opponent.handTotal))
 
 	aceCount = 0 # counts how many aces the dealer has
 
@@ -286,16 +302,16 @@ def dealerTurn(cardDeck, dealer, opponents):
 
 	dealer.updateHandTotal()
 
-	print("Dealer's hand: " + str(dealer) + "for a total of", dealer.handTotal) 		
-	print("\n")
+	settings.write("\nDealer's hand: " + str(dealer) + "for a total of " + str(dealer.handTotal)) 		
+	settings.write("\n")
 	
 	if aceCount > 0: # dealer explains that the value of the ace has changed to 11 points
-		print("Assuming 11 points for an ace I was dealt for now.")
+		settings.write("Assuming 11 points for an ace I was dealt for now.")
 
 	if dealer.handTotal == 21: # if dealer has natural 21 / blackjack, the dealer wins by default
 
-		print("Natural 21! Dealer wins by default.")
-		print("\n")
+		settings.write("Natural 21! Dealer wins by default.")
+		settings.write("\n")
 		return
 
 	greaterPointCounter = 0
@@ -305,8 +321,8 @@ def dealerTurn(cardDeck, dealer, opponents):
 			greaterPointCounter += 1
 
 	if greaterPointCounter == len(opponents): # if the dealer already has a hand greater than or equal to the opponents' hand, the dealer wins
-		print("Dealer has " + str(dealer.handTotal) + ". Dealer wins!", sep = "")
-		print("\n")
+		settings.write("Dealer has " + str(dealer.handTotal) + ". Dealer wins!")
+		settings.write("\n")
 		return
 	
 
@@ -314,12 +330,12 @@ def dealerTurn(cardDeck, dealer, opponents):
 
 		cardDeck.dealOne(dealer)
 		newCard = dealer.hand[len(dealer.hand) - 1]
-		print("Dealer hits: " + str(newCard))
-		print("New Total: ", dealer.handTotal)
-		print("\n")
+		settings.write("\nDealer hits: " + str(newCard))
+		settings.write("\nNew Total: " + str(dealer.handTotal))
+		settings.write("\n")
 
 		if dealer.handTotal == 21:
-			print("Dealer has 21! Dealer wins by default.")
+			settings.write("Dealer has 21! Dealer wins by default.")
 			return
 
 		if newCard.rank == "A": 					# checks to see if new card dealt was an ace, and adjusts the value if needed
@@ -331,7 +347,7 @@ def dealerTurn(cardDeck, dealer, opponents):
 				dealer.updateHandTotal()
 				if dealer.handTotal <= 21: 		# if don't bust from ace having a point value of 11, then make it an 11
 
-					print("Assuming 11 points for the ace you were dealt for now.")
+					settings.write("Assuming 11 points for the ace you were dealt for now.")
 				else: 							# if would bust from making the ace have a point value of 11, then keep it as 1
 
 					dealer.hand[len(dealer.hand) - 1].value = 1
@@ -351,7 +367,7 @@ def dealerTurn(cardDeck, dealer, opponents):
 
 			if aceCount > 0: 					
 
-				print("Over 21. Switching an ace from 11 points to 1.")
+				settings.write("Over 21. Switching an ace from 11 points to 1.")
 
 				for card in dealer.hand:
 
@@ -360,38 +376,44 @@ def dealerTurn(cardDeck, dealer, opponents):
 						card.value = 1
 
 				dealer.updateHandTotal()
-				print("New Total:", dealer.handTotal)
-				print("\n")
+				settings.write("New Total:" +  str(dealer.handTotal))
+				settings.write("\n")
 
 		if dealer.handTotal > 21: 			# dealer busts even if all aces are changed to have a point value of 1
 
-			print("Dealer has " + str(dealer.handTotal) + ". Dealer busts!", sep = "")
-			print("\n")
+			settings.write("Dealer has " + str(dealer.handTotal) + ". Dealer busts!")
+			settings.write("\n")
 			return
 
 		greaterPointCounter = 0
+		bustCounter = 0
+
 		for opponent in opponents:
 			if dealer.handTotal >= opponent.handTotal: 
 
-				greaterPointCounter += 1
+				if opponent.handTotal > 21:
+					bustCounter += 1
+				else:
+					greaterPointCounter += 1
 
-		if  greaterPointCounter == len(opponents):	# dealer wins by default because the hand is worth the same or more than the opponents' hand
+		if greaterPointCounter == len(opponents) - bustCounter:	# dealer wins by default because the hand is worth the same or more than the opponents' hand
 
-			print("Dealer has " + str(dealer.handTotal) + ". Dealer wins!", sep = "")
-			print("\n")
+			settings.write("Dealer has " + str(dealer.handTotal) + ". Dealer wins!")
+			settings.write("\n")
 			return
+
 
 # The main program, which conducts the simplified game of Blackjack for the opponent and the dealer
 def main():
 
 	cardDeck = Deck()
-	print("Initial Deck:")
-	print(cardDeck)
+	settings.write("Initial Deck:")
+	settings.write(cardDeck)
 
 	random.seed(50) 			# comment this line out to get a different outcome
 	cardDeck.shuffle()
-	print("Shuffled Deck:")
-	print(cardDeck)
+	settings.write("Shuffled Deck:")
+	settings.write(cardDeck)
 
 	dealer = Player("Dealer")
 	opponent1 = Player("Player 1")
@@ -404,8 +426,8 @@ def main():
 	cardDeck.dealOne(opponent2) 	# face up
 	cardDeck.dealOne(dealer) 		# face up
 
-	print("Deck after dealing two cards each:")
-	print(cardDeck)
+	settings.write("Deck after dealing two cards each:")
+	settings.write(cardDeck)
 
 	showHands([opponent1, opponent2], dealer)
 
@@ -413,11 +435,11 @@ def main():
 	opponentTurn(cardDeck, dealer, opponent2)
 	dealerTurn(cardDeck,dealer,[opponent1, opponent2])
 
-	print ("Game over.")
-	print ("Final hands:")
-	print ("   Dealer:    " + str(dealer))
-	print ("   Opponent:  " + str(opponent1))
-	print ("   Opponent:  " + str(opponent2))
+	settings.write("Game over.")
+	settings.write("Final hands:")
+	settings.write("   Dealer:    " + str(dealer))
+	settings.write("   Opponent:  " + str(opponent1))
+	settings.write("   Opponent:  " + str(opponent2))
 
 
 # main()
