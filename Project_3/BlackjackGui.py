@@ -210,8 +210,8 @@ class Application(tk.Frame):
 			if p1.handTotal == p2.handTotal and p1.handTotal <= 21 and p2.handTotal <= 21:
 				settings.write("It's a tie between ", p1.getName() + " and " + p2.getName() + ".")			
 
-def main():
-        root = tk.Tk()
-        app = Application(master=root)
-        app.mainloop()
-main()
+#def main():
+        #root = tk.Tk()
+        #app = Application(master=root)
+        #app.mainloop()
+#main()

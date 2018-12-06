@@ -1,5 +1,6 @@
 from tkinter import *
 from BlackjackGui import *
+import Poker as Pk
 
 
 
@@ -10,7 +11,7 @@ def main():
     #BLKJK = Application(master = root)
     root.geometry("300x300")
 
-    welcome = Label(root, text= "3.14")
+    welcome = Label(root, text= "Casino 3.14")
     welcome.pack()
 
     welcome2 = Label(root, text="Select a Game you want to play")
@@ -22,7 +23,7 @@ def main():
     #Blackjack.pack()
 
     
-    Poker = Button(root, text="Poker", command= lambda: [root.destroy()])
+    Poker = Button(root, text="Click here to Poker", command= lambda: [Pk.Game()])
     Poker.pack()
 
 
