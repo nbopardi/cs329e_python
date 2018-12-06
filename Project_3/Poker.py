@@ -1,4 +1,4 @@
-iimport random
+import random
 import collections
 from tkinter import *
 from PIL import Image, ImageTk
