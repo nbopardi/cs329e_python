@@ -1,6 +1,6 @@
 
 from BlackjackGui import *
-
+from War import *
 import random
 import collections
 from tkinter import *
@@ -600,8 +600,10 @@ def main():
     Poker.pack()
 
 
-    War = Button(root, text="Click  here to play War", command= lambda: [root.destroy()])
-    War.pack()
+    # War = Button(root, text="Click  here to play War", command= lambda: [root.destroy()])
+    # War.pack()
+
+    War = WarApplication(master=root)
 
     Exit = Button(root, text="Quit", command= lambda: [root.destroy()])
     Exit.pack()

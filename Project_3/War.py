@@ -1,7 +1,7 @@
 import random
 from PIL import Image, ImageTk
 import tkinter as tk
-
+import settings
 #  Creates Player class w/ empty list and name
 class Player:
     numberOfPlayers = 0
@@ -99,7 +99,7 @@ class Deck:
 
 
 
-class Application(tk.Frame):
+class WarApplication(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.pack()
@@ -131,12 +131,12 @@ class Application(tk.Frame):
         self.playWar["command"] = self.createGame
         self.playWar.pack(side="top")
 
-        self.quit = tk.Button(self, text="QUIT", fg="red", command=root.destroy)
-        self.quit.pack(side="bottom")
+        # self.quit = tk.Button(self, text="QUIT", fg="red", command=root.destroy)
+        # self.quit.pack(side="bottom")
 
     def updateImages(self, playerHandText, labels, parent, row):
 
-        # print(cards) # debug
+        # settings.write(cards) # debug
 
         # if len(labels) < len(cards):
         #     while len(labels) != len(cards):
@@ -171,6 +171,10 @@ class Application(tk.Frame):
         top = tk.Toplevel()
         top.geometry("1000x1000")
 
+        # Create text output for the game
+        settings.init(top)
+        settings.console.grid(row=35,columnspan=5)
+        settings.write("Welcome to War! Please press 'Continue Round' to start the game.")
 
         # Contains all the cards for player 1
         p1CardLabels = []
@@ -204,9 +208,9 @@ class Application(tk.Frame):
         #     helperButton.grid(row=0, column=6)
 
 
-        # print("\n\nInitial hands:")
-        # print(player1.playerName + ":\n" + str(player1) + "\n")
-        # print(player2.playerName + ":\n" + str(player2))
+        # settings.write("\n\nInitial hands:")
+        # settings.write(player1.playerName + ":\n" + str(player1) + "\n")
+        # settings.write(player2.playerName + ":\n" + str(player2))
 
 
         #---------------------------------------------------------------------------------------
@@ -219,7 +223,7 @@ class Application(tk.Frame):
         #  Cycles through play actions until either player runs out of cards
         if (len(player1.hand) > 0 and len(player2.hand) > 0) or self.quitGame:
             if not self.previousTie and not self.helperCalled:  # Checks if last cards played resulted in a tie - if so then don't pull new cards (already been pulled)
-                print("\n\nROUND " + str(self.roundCounter) + ":")
+                settings.write("\n\nROUND " + str(self.roundCounter) + ":")
                 player1Card = player1.hand.pop(0)
                 player2Card = player2.hand.pop(0)
 
@@ -227,8 +231,8 @@ class Application(tk.Frame):
                 player2.playerHandText[0] = str(player2Card)
                 self.updateImages(player1.playerHandText, p1Labels, top, row=0)
                 self.updateImages(player2.playerHandText, p2Labels, top, row=5)
-                print("Player 1 plays:\t" + '{:>3}'.format(str(player1Card)))
-                print("Player 2 plays:\t" + '{:>3}'.format(str(player2Card)) + "\n")
+                settings.write("\nPlayer 1 plays:\t" + '{:>3}'.format(str(player1Card)))
+                settings.write("\nPlayer 2 plays:\t" + '{:>3}'.format(str(player2Card)) + "\n")
 
             if self.previousTie:
                 player1Card = player1.playerHandText[0]
@@ -236,19 +240,19 @@ class Application(tk.Frame):
 
             #  Compares values of the 2 played cards
             if int(self.valueFinder[str(player1Card.rank)]) + int(self.valueFinder[str(self.player1CardHelper.rank)]) > int(self.valueFinder[str(player2Card.rank)]) + int(self.valueFinder[str(self.player2CardHelper.rank)]):
-                print("Player 1 wins round " + str(self.roundCounter) + ":" + '{:>4}'.format(
+                settings.write("Player 1 wins round " + str(self.roundCounter) + ":" + '{:>4}'.format(
                     str(player1Card)) + " >" + '{:>4}'.format(str(player2Card)) + "\n")
                 if self.helperCalled and not self.previousTie:
-                    print(str(player1Card) + "+" + str(self.player1CardHelper) + " VS " + str(player2Card) + "+" + str(self.player2CardHelper) + "\n")
+                    settings.write(str(player1Card) + "+" + str(self.player1CardHelper) + " VS " + str(player2Card) + "+" + str(self.player2CardHelper) + "\n")
                 if len(player2.hand) > 0 and not self.previousTie and not self.helperCalled:
                     # activateHelper = input("Does the loser want help? [y] or [n]")
                     if activateHelper:
                         self.whoNeedsHelp = 2
                         self.helperCalled = True
-                        print("*GIVES EXTRA CARD*")
+                        settings.write("*GIVES EXTRA CARD*")
                         self.player2CardHelper = player2.hand.pop(0)
                         player2.playerHandText[1] = self.player2CardHelper
-                        print(self.player2CardHelper)
+                        settings.write(self.player2CardHelper)
                         input("PRESS ENTER")
                         return
                         # continue
@@ -270,7 +274,7 @@ class Application(tk.Frame):
                     player1.hand.append(player1Card)
                     player1.hand.append(player2Card)
                     if self.helperCalled:
-                        print("APPENDED HELPER CARD")
+                        settings.write("APPENDED HELPER CARD")
                         if self.whoNeedsHelp == 1:
                             player1.hand.append(self.player1CardHelper)
                         elif self.whoNeedsHelp == 2:
@@ -286,20 +290,20 @@ class Application(tk.Frame):
                 self.recap(player1, player2)
 
             elif int(self.valueFinder[str(player1Card.rank)]) + int(self.valueFinder[str(self.player1CardHelper.rank)]) < int(self.valueFinder[str(player2Card.rank)]) + int(self.valueFinder[str(self.player2CardHelper.rank)]):
-                print("Player 2 wins round " + str(self.roundCounter) + ":" + '{:>4}'.format(
+                settings.write("Player 2 wins round " + str(self.roundCounter) + ":" + '{:>4}'.format(
                     str(player2Card)) + " >" + '{:>4}'.format(str(player1Card)) + "\n")
                 if self.helperCalled and not self.previousTie:
-                    print(str(player1Card) + "+" + str(self.player1CardHelper) + " VS " + str(player2Card) + "+" + str(
+                    settings.write(str(player1Card) + "+" + str(self.player1CardHelper) + " VS " + str(player2Card) + "+" + str(
                         self.player2CardHelper) + "\n")
                 if len(player1.hand) > 0 and not self.previousTie and not self.helperCalled:
                     # self.activateHelper = input("Does the loser want help? [y] or [n]")
                     if activateHelper:
                         self.helperCalled = True
                         self.whoNeedsHelp = 1
-                        print("*GIVES EXTRA CARD*")
+                        settings.write("*GIVES EXTRA CARD*")
                         self.player1CardHelper = player1.hand.pop(0)
                         player1.playerHandText[1] = self.player1CardHelper
-                        print(self.player1CardHelper)
+                        settings.write(self.player1CardHelper)
                         input("PRESS ENTER")
                         return
                         # continue
@@ -320,7 +324,7 @@ class Application(tk.Frame):
                     player2.hand.append(player1Card)
                     player2.hand.append(player2Card)
                     if self.helperCalled:
-                        print("APPENDED HELPER CARD")
+                        settings.write("APPENDED HELPER CARD")
                         if self.whoNeedsHelp == 1:
                             player2.hand.append(self.player1CardHelper)
                         elif self.whoNeedsHelp == 2:
@@ -337,7 +341,7 @@ class Application(tk.Frame):
 
             #  If there's a tie - check if both players can tribute 3 cards for the continuation of the round
             else:
-                print("War starts:" + '{:>4}'.format(str(player1Card)) + " =" + '{:>4}'.format(str(player2Card)))
+                settings.write("War starts:" + '{:>4}'.format(str(player1Card)) + " =" + '{:>4}'.format(str(player2Card)))
                 if len(player1.hand) < 5 or len(player2.hand) < 5:
                     self.quitGame = True
                     "GAAAAAAAAAAAAAAAAAAAAAAAAME OOOOOOOOOOOOOOOOVER"
@@ -351,37 +355,37 @@ class Application(tk.Frame):
                 #  3 cards from each player are tributed
 
                 for i in range(0, 3):
-                    print(player1.playerName + " puts" + '{:>4}'.format(str(player1.hand[0])) + " face down")
+                    settings.write("\n" + player1.playerName + " puts" + '{:>4}'.format(str(player1.hand[0])) + " face down\n")
                     self.p1Discard.append(player1.hand.pop(0))
-                    print(player2.playerName + " puts" + '{:>4}'.format(str(player2.hand[0])) + " face down")
+                    settings.write("\n" + player2.playerName + " puts" + '{:>4}'.format(str(player2.hand[0])) + " face down\n")
                     self.p2Discard.append(player2.hand.pop(0))
 
-                print(player1.playerName + " puts" + '{:>4}'.format(str(player1.hand[0])) + " face up")
+                settings.write(player1.playerName + " puts" + '{:>4}'.format(str(player1.hand[0])) + " face up\n")
                 player1Card = player1.hand.pop(0)
                 player1.playerHandText[0] = player1Card
                 self.p1Discard.append(player1Card)
-                print(player2.playerName + " puts" + '{:>4}'.format(str(player2.hand[0])) + " face up\n")
+                settings.write(player2.playerName + " puts" + '{:>4}'.format(str(player2.hand[0])) + " face up\n")
                 player2Card = player2.hand.pop(0)
                 player2.playerHandText[0] = player2Card
                 self.p2Discard.append(player2Card)
                 self.previousTie = True
         else:
-            print("GAME OVER")
+            settings.write("GAME OVER")
             if not player2.hand:
-                print("\n\nGame over.  Player 1 wins!")
+                settings.write("\n\nGame over.  Player 1 wins!")
             else:
-                print("\n\nGame over.  Player 2 wins!")
+                settings.write("\n\nGame over.  Player 2 wins!")
 
-            print("\n\nFinal hands:")
-            print("Player 1:   ")
-            print(player1)  # printing a player object should print that player's hand
-            print("\nPlayer 2:")
-            print(player2)  # one of these players will have all of the cards, the other none
+            settings.write("\n\nFinal hands:")
+            settings.write("Player 1:   ")
+            settings.write(player1)  # printing a player object should print that player's hand
+            settings.write("\nPlayer 2:")
+            settings.write(player2)  # one of these players will have all of the cards, the other none
 
     # Function that prints both players' hands
     def recap(self, player1, player2):
-        print("Player 1 now has " + str(len(player1.hand)) + " card(s) in hand:")
-        print("Player 2 now has " + str(len(player2.hand)) + " card(s) in hand:")
+        settings.write("Player 1 now has " + str(len(player1.hand)) + " card(s) in hand\n")
+        settings.write("Player 2 now has " + str(len(player2.hand)) + " card(s) in hand\n")
 
     #  Function that adds all the played cards to a player
     def cashIn(self, player, winnings1, winnings2):
@@ -394,7 +398,7 @@ class Application(tk.Frame):
 # main()
 
 
-root = tk.Tk()
-app = Application(master=root)
-app.mainloop()
+# root = tk.Tk()
+# app = Application(master=root)
+# app.mainloop()
 
