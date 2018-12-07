@@ -574,9 +574,4 @@ def getHandName(x):
     hands = ["","High Card","One Pair","Two Pair","Three of a Kind","Straight","Flush","Full House","Four of a Kind","Straight Flush","Royal Flush"]
     return hands[x]
 
-#def main():
 
-    #a = Game()
-    #print(a)
-
-#main()
