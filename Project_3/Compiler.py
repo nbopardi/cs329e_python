@@ -30,4 +30,6 @@ def main():
     War = Button(root, text="War", command= lambda: [root.destroy()])
     War.pack()
 
+    root.mainloop()
+
 main()
