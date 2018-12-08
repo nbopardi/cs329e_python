@@ -1,5 +1,5 @@
 import unittest
-from Poker import *
+from Compiler import *
 
 class testCard(unittest.TestCase):
 	
@@ -46,4 +46,5 @@ class testPlayer(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+	print("Press Quit on the GUI and then the tests will run")
+	unittest.main()
